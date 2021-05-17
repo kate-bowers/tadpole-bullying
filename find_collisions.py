@@ -70,6 +70,50 @@ def find_def_start_time(def_num, csvs_path):
 				print(mins(drow[0]))
 				return drow[0] 
 
+def report_concurrents(collisions, wt_num, csvs_path, deftime, num_tads):
+	# within each video collision list
+	print("WOOOOOOOOO")
+	concurrents = open(os.path.join(csvs_path, str(wt_num) + "_new_output.txt"), "w")
+	concurrents.write(str(deftime) + '\n')
+	total_concurrents = 0
+	total_diff_subj_concurrent = 0
+	wot = 0
+	unique_concurrents = [0] * num_tads
+	for x in collisions: # at this collision time.....
+		#num_concurrent = 0
+		#diff_subj_concurrent = 0
+		all_colliders = []
+		self_collisions = 0
+		for y in collisions: # comparing with every other collision time....
+			if (x != y): # not comparing with self
+				if (math.sqrt((y[0]-x[0])**2) <= 0.5): # who is within a half second of me....
+					
+					#num_concurrent += 1
+					total_concurrents += 1
+					theirs = unique_concurrents[y[4] - 1]
+					if (y[0], x[0], y[4], x[4]) not in theirs:
+						if (x[4] != y[4]): # if it's someone else.... 
+							#print("YOOOOOOO")
+							#diff_subj_concurrent += 1
+							wot += 1
+							print("writing for ", wt_num)
+							concurrents.write(str(mins(x[0])) + " " + str(mins(y[0])) +
+								" " + str(x[4]) + " " + str(y[4]) + '\n')
+							all_colliders.append((x[0], y[0], x[4], y[4])) # .....put them and their time on the list
+							unique_concurrents[x[4] - 1].append((x[0], y[0], x[4], y[4]))
+			else:
+				self_collisions += 1
+		#print(all_colliders)
+		#print(len(all_colliders))
+		total_diff_subj_concurrent += len(all_colliders)
+		
+		#print(num_concurrent)
+		#total_diff_subj_concurrent += diff_subj_concurrent
+	concurrents.write(str(total_concurrents) + '\n')
+	concurrents.write(str(total_diff_subj_concurrent)+ '\n')
+	concurrents.write(str(wot)+ '\n')
+	concurrents.close()
+
 def find_collisions_per_video(datfile, csvs_path):
 	print(csvs_path)
 	def_num = datfile[0] 
@@ -84,22 +128,29 @@ def find_collisions_per_video(datfile, csvs_path):
 	def_start_time = find_def_start_time(def_num, csvs_path)
 
 	time_with_def = None
+	
 	for sub in range(1,num_tads): # calculate for all
 		if sub == def_num: #skip deformed lol
-			continue
-		sub_collisions = find_collisions(sub, def_num, csvs_path, wrong_distances, def_start_time)
-		all_collisions.append(sub_collisions[0])
-		total_collisions += len(sub_collisions[0])
-		time_with_def = sub_collisions[1]
+			continue 
+		result = find_collisions(sub, def_num, csvs_path, wrong_distances, def_start_time, all_collisions)
+		all_collisions = list(result[0])
+		#coll_times = result[2]
+
+		time_with_def = result[1] # this is a stupid way to find this
 		#print(sub, len(sub_collisions))
+	total_collisions = len(all_collisions)
 	print(str(total_collisions) + " by " + str(num_tads - 1) + " wt tadpoles") # + " in " + deformed_csv[14][1])
 	print("in " + mins(time_with_def))
 
 
 	# Flatten into time-based mega list
-	all_collisions_flat_bytime = sum(all_collisions, []) # flattens from subjects to full video
+	#print(all_collisions)
+	#all_collisions_flat_bytime = sum(all_collisions, []) # flattens from subjects to full video
 	# sort by time
+	all_collisions_flat_bytime = all_collisions
 	all_collisions_flat_bytime.sort(key=lambda x : x[0])
+
+	#report_concurrents(all_collisions_flat_bytime, def_num, csvs_path, def_start_time, num_tads)   # concurrents
 
 	'''
 	all_collisions_flat_times = list(map(lambda x: x[0], all_collisions_flat_bytime))
@@ -116,13 +167,47 @@ def find_collisions_per_video(datfile, csvs_path):
 	
 	return (all_collisions_flat_bytime, time_with_def)
 
-def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start):
+def is_redundant(collisions_so_far, curr_coll, wrong_distances): # tells whether this is a redundant/multipleID WT collision
+	# curr_coll -- time, wt_num, wxy, 
+	time = curr_coll[0]
+	identity = curr_coll[1]
+	xy = curr_coll[2]
+
+	'''all_collisions.append(
+		(float(time_of_smallest_dist) - float(def_start), #time corrected for when def shows up
+			disp, 
+			vel, 
+			False,
+			wt_num, 
+			wxy,
+			def_num)
+		)'''
+	for coll in collisions_so_far:
+		if (abs(time - coll[0]) <= 0.5): #within half a second
+			if wrong_distances:
+				distance = dist(coll[5], xy) / 10
+			else: distance = dist(coll[5], xy)
+
+			if (distance <= 3): # within one mm idk lol
+				print("YEEEET BAD BOYIIEEEE, ", distance, mins(time), mins(coll[0]), identity, coll[4])
+				return True
+
+			if (identity == coll[4]):
+				print("MEEEEEEEEEMES LOL", mins(time), mins(coll[0]), identity, coll[4])
+				return True
+
+			else:
+				print("naurrrr \n but yeet dist was ", distance, mins(time), mins(coll[0]), identity, coll[4])
+
+	return False
+
+def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_collisions):
 	global ones
 	deformed_csv = os.path.join(csvs_path, f"track-arena_1-subject_{def_num}.csv")
 	wt_csv = os.path.join(csvs_path, f"track-arena_1-subject_{wt_num}.csv")
 
 	num_collisions = 0
-	collisions = []
+	#collisions = []
 
 	time_with_def = 0
 	# READING IN DATA & ISOLATING XY COORDS
@@ -154,6 +239,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start):
 
 		for drow, wrow in zip(def_reader, wt_reader):
 			time_with_def = float(drow[0]) - float(def_start)
+			if (time_with_def < 0): continue
 
 			dxy = drow[2:4]
 			wxy = wrow[2:4]
@@ -182,7 +268,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start):
 			
 			if ((distance <= significant_distance)): # within significant proximity to deformed
 				#  and (distance >= 5 mm)
-				if ((not already_in_proximity) and (distance >= too_close_dist)):
+				if ((not already_in_proximity) and (distance > too_close_dist)):
 					
 					# DEAL WITH OLD EVENT
 					if (prox_start_time != None): # there was a previous collision
@@ -204,21 +290,30 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start):
 							) # false: not a clean collision (displacement is not the 2s window)
 							'''
 							
-							# TEMPORARY CHANGE TO VELOCITY NANS
+							# exclude velocity nans
 							if (prox_duration != 1):
+								#if (time_of_smallest_dist not in coll_times):
 								if(vel_of_smallest_dist != "-"):
+									time = (float(time_of_smallest_dist) - float(def_start) + 1.034) #@@@@@ woooo change mee back when u need to compare
 									vel = float(vel_of_smallest_dist) if not wrong_distances else float(vel_of_smallest_dist)/10
 									disp = disp / 10 if wrong_distances else disp    
-									collisions.append(
-										(float(time_of_smallest_dist) - float(def_start), #time corrected for when def shows up
-										disp, 
-										vel, #float(vel_of_smallest_dist), 
-										False,
-										wt_num, 
-										wxy,
-										def_num)
-									)
-									print(mins(time_of_smallest_dist), vel, def_num)
+									if (vel < 150):
+										if(smallest_dist_so_far > too_close_dist):
+											if (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
+												all_collisions.append(
+													(time, #time corrected for when def shows up
+													disp, 
+													vel, 
+													False,
+													wt_num, 
+													wxy,
+													def_num)
+												)
+										#coll_times.append(time_of_smallest_dist) # update
+									#print("UPDSTED")
+								#else:
+									#print("HELPP")
+										#print(mins(time_of_smallest_dist), vel, def_num)
 							else:
 								ones += 1
 					prox_start_time = wrow[0] 
@@ -290,10 +385,13 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start):
 			# is it likely that the real collision will happen more than 3s after the proximity begins
 			# collision is smallest dist within first 3s?
 
-			#TODO THIS IS NOT WORKING WE COLLIDED AT 443.125 BUT NO i think it is now lol
+			
 			if (time_of_smallest_dist != None): #if there is an existing collision on record
-				if ((float(drow[0]) >= float(time_of_smallest_dist) + 2) and (not drift_closed)): 
-				# if at least 2 seconds since collision passed and displacement not yet calculated (this code hasn't yet run for it)
+				if ((float(drow[0]) >= float(time_of_smallest_dist) + 5) and (not drift_closed)): 
+				# if at least 5 seconds since collision passed and displacement not yet calculated (this code hasn't yet run for it)
+					# used to be 2
+					# problem is that displacement can get off maybe if it is hit by another WT in this time 
+					#    -- drift does not close based on ANY other collision happening in that time :/ and can't really be done because these are not calcd in order
 					'''
 					proximity_times.write("collision by subject " + str(wt_num) + " at " + mins(time_of_smallest_dist) + "\n")
 					proximity_times.write("displacement: " + str(dist(dxy, dxy_of_smallest_dist)) + "\n")
@@ -311,22 +409,31 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start):
 					'''
 					
 
-					# TEMPORARY CHANGE TO VELOCITY NANS
+					# exclude velocity nans
 					disp = float(dist(dxy, dxy_of_smallest_dist))
 					if(prox_duration != 1):
-						if(vel_of_smallest_dist != "-"):    
-							vel = float(vel_of_smallest_dist) if not wrong_distances else float(vel_of_smallest_dist)/10 
-							disp = disp / 10 if wrong_distances else disp    
-							collisions.append(
-								(float(time_of_smallest_dist) - float(def_start), 
-								disp, 
-								vel, #float(vel_of_smallest_dist), 
-								True,
-								wt_num,
-								wxy,
-								def_num)
-							)
-							print(mins(time_of_smallest_dist), vel, def_num)
+						#if(time_of_smallest_dist not in coll_times):
+						if(vel_of_smallest_dist != "-"): 
+							vel = float(vel_of_smallest_dist) if not wrong_distances else (float(vel_of_smallest_dist)/10)
+							disp = disp / 10 if wrong_distances else disp
+							time = float(time_of_smallest_dist) - float(def_start) + 1.034   #FOR NOWWWW @@@@@@@@
+							if (vel < 150):
+								if (smallest_dist_so_far > too_close_dist):
+									if (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
+										all_collisions.append(
+											(time, 
+											disp, 
+											vel,
+											True,
+											wt_num,
+											wxy,
+											def_num)
+										)
+								#coll_times.append(time_of_smallest_dist) # update
+								#print("WOO")
+						#else:
+							#print("HELPP")
+								#print(mins(time_of_smallest_dist), vel, def_num)
 					else:
 						ones += 1
 					# NaN velocities show up as "-"
@@ -350,11 +457,15 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start):
 		
 		#proximity_times.write(str(num_collisions))
 		#proximity_times.close()
-	return (collisions, time_with_def)
+	#print(len(coll_times))
+	#print(len(set(coll_times)))
+	return (all_collisions, time_with_def)
 
 base = "/Users/katharinebowers/Desktop/Tufts Files/Levin Lab/ethovision pipeline coding/"
 data_filepath = os.path.join(base, "Ethovision Track Data Exports/")
 video_csvs_folder = os.path.join(base, "CSVs for each video/")
+
+
 
 datfiles = {   #specific to current list of info
 	(os.path.join(data_filepath, "Raw data-Correction Copy NewVideo1_9_28_18 " +
@@ -385,7 +496,8 @@ for file in glob.glob(os.path.join(data_filepath, "*.xlsx")): #for each video ex
 print(len(collision_masterlist))
 #print(collision_masterlist[1])
 num_under = 0
-for video in collision_masterlist:
+
+for video in collision_masterlist:   # Collision frequency
 
 	'''
 	print(len(video))
@@ -411,8 +523,32 @@ for video in collision_masterlist:
 	plt.title("Collision frequency (bin = 5s)")
 	res = plt.hist(filtered_flat_times, bins=list(x*5 for x in range(19 * 12)), density=False)   # bin for every 5 seconds ////minute
 	#plt.hist(all_collisions_flat_times, bins=list(range(1450)))
-	plt.show() 
+	#plt.show() 
 
+	# VELOCITIES OVER TIME - NEW VERSION ALL ALREADY UNDER 150
+	plt.scatter(filtered_flat_times, filtered_flat_velocities)
+	plt.xlabel("Time (s)")
+	plt.ylabel("Velocity (mm/s)")
+	#plt.title("NewVideo1_9_28_18")
+	plt.title("Collision velocities over time")
+	#plt.show()
+
+	# DISPLACEMENTS OVER TIME
+	plt.scatter(filtered_flat_times, filtered_flat_disps)
+	plt.xlabel("Time (s)")
+	plt.ylabel("Displacement (mm)")
+	#plt.title("NewVideo1_9_28_18")
+	plt.title("Displacement of deformed tadpole in collisions over time")
+	#plt.show()
+
+	# VELOCITIES VS DISPLACEMENTS
+	plt.scatter(filtered_flat_velocities, filtered_flat_disps)
+	plt.xlabel("Collision Velocity (mm/s)")
+	plt.ylabel("Displacement (mm)")
+	#plt.title("NewVideo1_9_28_18")
+	plt.title("Collision velocities vs deformed tadpole displacement over time")
+	#plt.show()
+	
 print(mins(min_def_time))
 print(num_under)
 # Flatten into time-based mega list, sort by time
@@ -431,15 +567,58 @@ filtered_flat_velocities = list(map(lambda x: x[2], filtered_collision_masterlis
 filtered_flat_videoIDs = list(map(lambda x: x[6], filtered_collision_masterlist))
 filtered_flat_WTcolliders = list(map(lambda x: x[4], filtered_collision_masterlist))
 
+plt.scatter(filtered_flat_times, filtered_flat_velocities)
+plt.xlabel("Time (s)")
+plt.ylabel("Velocity (mm/s)")
+#plt.title("NewVideo1_9_28_18")
+plt.title("Collision velocities over time \n across 4 videos")
+#plt.show()
 
-# PLOT VELOCITY VS DISPLACEMENT
+# DISPLACEMENTS OVER TIME
+plt.scatter(filtered_flat_times, filtered_flat_disps)
+plt.xlabel("Time (s)")
+plt.ylabel("Displacement (mm)")
+#plt.title("NewVideo1_9_28_18")
+plt.title("Displacement of deformed tadpole in collisions over time \n across 4 videos")
+#plt.show()
+
+# VELOCITIES VS DISPLACEMENTS
+plt.scatter(filtered_flat_velocities, filtered_flat_disps)
+plt.xlabel("Collision Velocity (mm/s)")
+plt.ylabel("Displacement (mm)")
+#plt.title("NewVideo1_9_28_18")
+plt.title("Collision velocities vs deformed tadpole displacement over time \n across 4 videos")
+#plt.show()
+
+# ========= zipping time for velocity comparison =========
+'''
+all_zipped = zip(filtered_flat_velocities, filtered_flat_times, filtered_flat_videoIDs, filtered_flat_WTcolliders)
+all_zipped_velocity_descending = sorted(all_zipped, reverse=True)
+valid_velocity_descending = []
+for z in all_zipped_velocity_descending:
+	if z[0] <= 300:
+		valid_velocity_descending.append(z)
+rv2_vels = []
+for z in valid_velocity_descending:
+	if z[2] == 10:
+		rv2_vels.append(z)
+print(valid_velocity_descending)
+print('\n')
+print(len(all_zipped_velocity_descending))
+print(len(valid_velocity_descending))
+print(len(rv2_vels))
+print(rv2_vels)
 '''
 
+# PLOT VELOCITY VS DISPLACEMENT
+
+'''
 plt.scatter(all_collisions_flat_velocities, all_collisions_flat_disps) 
 plt.xlabel("Velocity")
 plt.ylabel("Displacement")
 plt.show()
 '''
+
 '''
 # THIS IS A SHITTY GRAPH BC THERE ARE SOME HUGE OUTLIERS (20,000 VELOCITY)
 
@@ -474,6 +653,7 @@ plt.show()
 
 '''
 # PLOT VELOCITIES OVER TIME
+'''
 outlier_vels = []
 ok_times = []
 ok_vels = []
@@ -482,7 +662,7 @@ under50_disps = []
 under50_disps_times = []
 for i in range(len(filtered_collision_masterlist)):
 	#print(i)
-	if filtered_flat_velocities[i] > 200: # temporary upper limit is 200
+	if filtered_flat_velocities[i] > 150: # 150 is our cutoff
 		outlier_vels.append(i)
 		print(mins(filtered_flat_times[i]), filtered_flat_velocities[i], 
 			" velocity", filtered_flat_videoIDs[i], 
@@ -514,14 +694,18 @@ plt.xlabel("Time (s)")
 plt.ylabel("Velocity (mm/s)")
 #plt.title("NewVideo1_9_28_18")
 plt.title("Collision velocities over time")
-plt.show()
+#plt.show()
 
 plt.xlabel("Time (s)")
 plt.ylabel("Velocity (mm/s)")
 #plt.title("NewVideo1_9_28_18, velocities under 200 mm/s")
-plt.title("Collision velocities over time (under 200 mm/s)")
+plt.title("Collision velocities over time (under 150 mm/s)")
 plt.scatter(ok_times, ok_vels)
-plt.show()
+#plt.show()
+
+'''
+
+
 
 
 # PLOT DISPLACEMENTS OVER TIME
@@ -597,7 +781,8 @@ plt.show()
 '''
 
 
-collis = [153/38, 196/36, 174/36, 233/38]
+#collis = [153/38, 196/36, 174/36, 233/38]
+collis = [109/38, 130/36, 139/36, 156/38]
 collis_mean = np.mean(collis)
 collis_std = np.std(collis)
 
@@ -615,10 +800,10 @@ ax.bar(x_pos, CTEs,
        alpha=0.5,
        ecolor='black',
        capsize=10)
-ax.set_ylabel('Number of collisions with deformed tadpole')
+ax.set_ylabel('Number of collisions')
 ax.set_xticks(x_pos)
 ax.set_xticklabels(labels)
-ax.set_title('Average collisions with deformed tadpole in 18:48, per wild-type tadpole')
+ax.set_title('Calculated collisions with deformed tadpole, per wild-type tadpole')
 ax.yaxis.grid(True)
 plt.show()
 
@@ -755,7 +940,7 @@ plt.show()
 '''
 total_concurrents = 0
 total_diff_subj_concurrent = 0
-for x in all_collisions_flat_bytime: # at this collision time.....
+for x in collision_flat_bytime: # at this collision time.....
 	#num_concurrent = 0
 	#diff_subj_concurrent = 0
 	all_colliders = []
@@ -779,8 +964,10 @@ for x in all_collisions_flat_bytime: # at this collision time.....
 	#total_diff_subj_concurrent += diff_subj_concurrent
 print(total_concurrents)
 print(total_diff_subj_concurrent)
-# these numbers should be halved because they are counted twice?
 '''
+
+# these numbers should be halved because they are counted twice?
+
 '''
 multi_times = []
 for x in all_collisions_flat_bytime: # at this collision time
@@ -843,6 +1030,4 @@ plt.show()
 
 # Plot velocities over time
 	# if nan then dont plot obv but do count and report percentage nan
-
-
 
