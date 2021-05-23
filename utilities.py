@@ -3,6 +3,7 @@
 # Program development started March 2021
 # Beckman Scholars - Tadpole Bullying
 # utilities.py -- straightforward utility functions for larger collision script
+
 import math
 import os
 import csv
