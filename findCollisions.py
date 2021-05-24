@@ -14,14 +14,11 @@ from isRedundant import is_redundant
 def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_collisions):
     deformed_csv = os.path.join(csvs_path, f"track-arena_1-subject_{def_num}.csv")
     wt_csv = os.path.join(csvs_path, f"track-arena_1-subject_{wt_num}.csv")
-
     num_collisions = 0
-    # collisions = []
-
     time_with_def = 0
+
     # READING IN DATA & ISOLATING XY COORDS
     with open(deformed_csv, newline='') as def_f, open(wt_csv, newline='') as wt_f:
-        # proximity_times = open(os.path.join(folder_rv2, str(wt_num)+"output.txt"), "w") # should be path specific?
         def_reader = csv.reader(def_f)
         wt_reader = csv.reader(wt_f)
 
@@ -29,8 +26,8 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
             next(wt_reader)
             next(def_reader)
 
+        # Initialize variables for tracking proximity event details
         already_in_proximity = False
-
         prox_start_time = None
         prox_duration = 0
         smallest_dist_so_far = None
@@ -38,7 +35,8 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
         time_of_smallest_dist = None
         dxy_of_smallest_dist = []
         drift_closed = False
-        active_disp = None
+
+        # active_disp = None # I DONT THINK THIS DOES ANYTHING?
         num_lost = 0
         w_lost = 0
         d_lost = 0
@@ -201,6 +199,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                 if ((float(drow[0]) >= float(time_of_smallest_dist) + 5) and (not drift_closed)):
                     # if at least 5 seconds since collision passed and displacement not yet calculated (this code hasn't yet run for it)
                     # used to be 2
+                    #  TODO make global constants for time and other stuff lol
                     # problem is that displacement can get off maybe if it is hit by another WT in this time
                     #    -- drift does not close based on ANY other collision happening in that time :/ and can't really be done because these are not calcd in order
                     '''
