@@ -9,6 +9,7 @@ import csv
 from utilities import dist
 from isRedundant import is_redundant
 
+# branching this is probably best bet
 
 def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_collisions):
     deformed_csv = os.path.join(csvs_path, f"track-arena_1-subject_{def_num}.csv")
