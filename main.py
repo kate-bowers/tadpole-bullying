@@ -10,6 +10,7 @@ import glob
 import os
 import collisionsPerVideo as perVideo
 import plotAll
+from utilities import mins
 
 collision_masterlist = []  # every collision in every video
 min_def_time = None
@@ -33,12 +34,16 @@ for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each
 # Make plots for each video
 for video in collision_masterlist:
 	plotAll.makePlots(video, min_def_time)
+	for coll in video:
+		print(mins(coll[0]), coll)
+	break
+
 
 # Make plots for all videos combined
-collision_masterlist_flat_bytime = sum(collision_masterlist, []) # flattens from each video to all
-collision_masterlist_flat_bytime.sort(key=lambda x : x[0])
-print(collision_masterlist_flat_bytime)
-plotAll.makePlots(collision_masterlist_flat_bytime, min_def_time)
-# TODO LABEL THESE GRAPHS LOL THEYRE USELESS RN
-# Make summary bar plots
-import summaryBars
+# collision_masterlist_flat_bytime = sum(collision_masterlist, []) # flattens from each video to all
+# collision_masterlist_flat_bytime.sort(key=lambda x : x[0])
+# print(collision_masterlist_flat_bytime)
+# plotAll.makePlots(collision_masterlist_flat_bytime, min_def_time)
+# # TODO LABEL THESE GRAPHS LOL THEYRE USELESS RN
+# # Make summary bar plots
+# import summaryBars

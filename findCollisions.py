@@ -6,7 +6,7 @@
 
 import os
 import csv
-from utilities import dist
+from utilities import dist, mins
 from isRedundant import is_redundant
 
 # branching this is probably best bet
@@ -79,9 +79,9 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                         # If the collision is valid, record it
                         if (prox_duration > 1) and (vel_of_smallest_dist != "-"):
                             # Calculate time, vel, disp
-                            time = (float(time_of_smallest_dist) - float(
-                                # TODO figure out what time should be? idk what was changed
-                                def_start) + 1.034)  # @@@@@ woooo change mee back when u need to compare
+                            # TODO figure out what time should be? idk what was changed
+                            time = (float(time_of_smallest_dist)) # - float( TODO i made it just tosd
+                                # def_start) + 1.034)  # @@@@@ woooo change mee back when u need to compare
                             vel = float(vel_of_smallest_dist) if not wrong_distances \
                                 else float(vel_of_smallest_dist) / 10
                             disp = float(dist(dxy, dxy_of_smallest_dist)) if not wrong_distances \
@@ -163,8 +163,8 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                     # Copying collision recording code from earlier
                     if (prox_duration > 1) and (vel_of_smallest_dist != "-"):
                         # Calculate time, vel, disp
-                        time = (float(time_of_smallest_dist) - float(
-                            def_start) + 1.034)  # @@@@@ woooo change mee back when u need to compare
+                        time = (float(time_of_smallest_dist)) # - float( TODO i changed the time to just tosd
+                            # def_start) + 1.034)  # @@@@@ woooo change mee back when u need to compare
                         # TODO figure out what time should be? idk what was changed
                         vel = float(vel_of_smallest_dist) if not wrong_distances \
                             else float(vel_of_smallest_dist) / 10
@@ -188,6 +188,6 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                     #   "displacement" we record for it is due to the other WT's collision
                     drift_closed = True
             # last_dxy = dxy
-        last_time = drow[0]
-    time_with_def = last_time - def_start  # i added this new - check if it works right?
+        last_time = float(drow[0])
+    time_with_def = last_time - float(def_start)  # i added this new - check if it works right?
     return (all_collisions, time_with_def)
