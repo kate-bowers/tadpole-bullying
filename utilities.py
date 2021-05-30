@@ -17,7 +17,7 @@ def dist(p1, p2):
     y2 = p2[1]
 
     dist = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
-    return dist
+    return float(dist)
 
 
 def mins(time):

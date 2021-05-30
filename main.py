@@ -14,6 +14,7 @@ from utilities import mins
 
 collision_masterlist = []  # every collision in every video
 min_def_time = None
+# 	TODO make constants module and import them
 
 for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each video excel sheet
 	# Make output directory for all csvs
@@ -30,13 +31,14 @@ for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each
 	if (min_def_time is None) or (collision_output[1] < min_def_time):
 		min_def_time = collision_output[1]
 	print("yoinks")
+	break  # just look at first vid
 
 # Make plots for each video
 for video in collision_masterlist:
-	plotAll.makePlots(video, min_def_time)
+	# plotAll.makePlots(video, min_def_time)
 	for coll in video:
-		print(mins(coll[0]), coll)
-	break
+		print(mins(coll[0]), coll)  # mins(coll[8]), coll)
+	break  # just look at first vid
 
 
 # Make plots for all videos combined
