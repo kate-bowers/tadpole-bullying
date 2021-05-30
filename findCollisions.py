@@ -112,7 +112,6 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                         # (future) Do not count a "collision" that happens less than
                         # 3 time points since the last logged proximity
                         if (prox_duration > 1) and (vel_of_smallest_dist != "-"):
-                            # if (curr_time - latest_prox_time >= 0.101): TODO add back in
                             # Calculate time, vel, disp
                             # TODO figure out what time should be? idk what was changed
                             time = time_of_smallest_dist # - float( TODO i made it just tosd
@@ -125,20 +124,21 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                             if (vel < 150):
                                 if (smallest_dist_so_far > too_close_dist) and \
                                         (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
-                                    all_collisions.append(
-                                        (time,  # time corrected for when def shows up
-                                         disp,
-                                         vel,
-                                         False,
-                                         wt_num,
-                                         wxy,
-                                         def_num,
-                                         prox_duration,
-                                         prox_start_time)
-                                    )
+                                    if (curr_time - latest_prox_time >= 0.101):
+                                        all_collisions.append(
+                                            (time,  # time corrected for when def shows up
+                                             disp,
+                                             vel,
+                                             False,
+                                             wt_num,
+                                             wxy,
+                                             def_num,
+                                             prox_duration)  # ,
+                                             # prox_start_time)
+                                        )
                             # End work on old event
-                            # else: TODO add back in
-                            #    all_collisions.append((curr_time, "better luck next time"))
+                                    else:
+                                         print((mins(curr_time), wt_num, "better luck next time"))
 
                     # Initialize variables for new event
                     prox_start_time = curr_time
@@ -202,7 +202,6 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
 
                     # Copying collision recording code from earlier
                     if (prox_duration > 1) and (vel_of_smallest_dist != "-"):
-                        # if ((curr_time - latest_prox_time) >= 0.101): TODO add back in
                         # Calculate time, vel, disp
                         time = time_of_smallest_dist  # - float( TODO i changed the time to just tosd
                             # def_start) + 1.034)  # @@@@@ woooo change mee back when u need to compare
@@ -214,19 +213,20 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                         if (vel < 150):
                             if (smallest_dist_so_far > too_close_dist) and \
                                     (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
-                                all_collisions.append(
-                                    (time,  # time corrected for when def shows up
-                                     disp,
-                                     vel,
-                                     True,
-                                     wt_num,
-                                     wxy,
-                                     def_num,
-                                     prox_duration,
-                                     prox_start_time)
-                                )
-                        # else: TODO add back in
-                        #    all_collisions.append((curr_time, "better luck next time - timed out btw"))
+                                if ((curr_time - latest_prox_time) >= 0.101):
+                                    all_collisions.append(
+                                        (time,  # time corrected for when def shows up
+                                         disp,
+                                         vel,
+                                         True,
+                                         wt_num,
+                                         wxy,
+                                         def_num,
+                                         prox_duration) # ,
+                                         # prox_start_time)
+                                    )
+                                else:
+                                     print((mins(curr_time), wt_num, "better luck next time - timed out btw"))
                     # True is because it's a clean collision (2s displacement after)
                     # Though like .. could be not clean at all bc who knows if a diff WT hit the deformed and the
                     #   "displacement" we record for it is due to the other WT's collision
