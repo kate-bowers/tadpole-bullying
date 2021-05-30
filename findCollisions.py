@@ -123,8 +123,8 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                                 else dist(dxy, dxy_of_smallest_dist) / 10
 
                             if (vel < 150):
-                                if (smallest_dist_so_far > too_close_dist) and \
-                                        (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
+                                if (smallest_dist_so_far > too_close_dist):  # and \
+                                        # (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
                                     all_collisions.append(
                                         (time,  # time corrected for when def shows up
                                          disp,
@@ -133,8 +133,8 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                                          wt_num,
                                          wxy,
                                          def_num,
-                                         prox_duration,
-                                         prox_start_time)
+                                         prox_duration) # ,
+                                         # prox_start_time)
                                     )
                             # End work on old event
                             # else: TODO add back in
@@ -212,8 +212,8 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                         disp = dist(dxy, dxy_of_smallest_dist) if not wrong_distances \
                             else dist(dxy, dxy_of_smallest_dist) / 10
                         if (vel < 150):
-                            if (smallest_dist_so_far > too_close_dist) and \
-                                    (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
+                            if (smallest_dist_so_far > too_close_dist):  # and \
+                                    # (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
                                 all_collisions.append(
                                     (time,  # time corrected for when def shows up
                                      disp,
@@ -222,8 +222,8 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                                      wt_num,
                                      wxy,
                                      def_num,
-                                     prox_duration,
-                                     prox_start_time)
+                                     prox_duration) # ,
+                                     # prox_start_time)
                                 )
                         # else: TODO add back in
                         #    all_collisions.append((curr_time, "better luck next time - timed out btw"))
