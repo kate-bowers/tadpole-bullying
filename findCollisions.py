@@ -42,6 +42,7 @@ from isRedundant import is_redundant
 #             all_collisions.append((curr_time, "better luck next time"))
 
 def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_collisions):
+    print("starting ", wt_num)
     def_start = float(def_start)
     deformed_csv = os.path.join(csvs_path, f"track-arena_1-subject_{def_num}.csv")
     wt_csv = os.path.join(csvs_path, f"track-arena_1-subject_{wt_num}.csv")
@@ -72,8 +73,13 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
         d_lost = 0
 
         # last_dxy = None # hmm what do i even use this for? "frdist" - not sure thats relevant anymore
-
+        counter = 0
         for drow, wrow in zip(def_reader, wt_reader):
+            counter += 1
+            # if counter > 1800:  # just look at the first minute for now
+                # in orig results contains 1 ongoing and one graze
+            #     break
+
             if float(drow[0]) < float(def_start): continue  # if the def tadpole isnt here yet, ignore
 
             dxy = drow[2:4]
@@ -97,18 +103,20 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
             # One of my experiment files was calibrated wrong and has all distances off by a factor of 10
             # This corrects for distance discrepancy
             if (wrong_distances):
-                significant_distance = 60
+                significant_distance = 50
                 necessary_distance = 40
                 too_close_dist = 5
             else:
-                significant_distance = 6
+                significant_distance = 5
                 necessary_distance = 4
                 too_close_dist = 0.5
 
             # Now we look for collisions
             if ((distance <= significant_distance)):  # within significant proximity to deformed
+                # print(wrow)
+                # print("in sig distance")
                 if ((not already_in_proximity) and (distance > too_close_dist)):  # new proximity event to follow
-
+                    print(wrow[0], distance, "new event")
                     # Close any ongoing proximity event, record collision if it is valid
                     if (prox_start_time is not None) and (not timed_out):
                         # If the collision is valid, record it
@@ -128,6 +136,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                                 if (smallest_dist_so_far > too_close_dist) and \
                                         (smallest_dist_so_far <= necessary_distance) and \
                                         (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
+                                    #           (smallest_dist_so_far <= necessary_distance) and \
                                     if (curr_time - latest_committed_prox >= 0.101):
                                         all_collisions.append(
                                             (time,  # time corrected for when def shows up
@@ -142,7 +151,17 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                                              # mins(prox_start_time),
                                              # mins(latest_prox_time))
                                         )
+                                        print("just added ", (time,
+                                             disp,
+                                             vel,
+                                             False,
+                                             wt_num,
+                                             wxy,
+                                             def_num,
+                                             prox_duration,
+                                             smallest_dist_so_far))
                                         latest_committed_prox = latest_prox_time
+
                             # End work on old event
                                     else:
                                          print((mins(curr_time), wt_num, "better luck next time"))
@@ -166,15 +185,18 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
 
                 # Not a new event, but the next timepoint in an ongoing event
                 elif (already_in_proximity):
+                    print(wrow[0], distance, "continuing")
                     prox_duration += 1
                     latest_prox_time = curr_time
                     if (curr_time < time_of_smallest_dist + 2):  # it's been less than 2s since we found the smallest dist
-                        if (distance < smallest_dist_so_far):  # Update if this is the smallest distance so far
-                            # TODO should be more than min distance though
+                        if (distance < smallest_dist_so_far) and \
+                                (distance > too_close_dist):  # Update if this is the smallest distance so far
+                            # TODO should be more than min distance though -- added 6/13
                             smallest_dist_so_far = distance
                             vel_of_smallest_dist = wrow[8]
                             time_of_smallest_dist = curr_time
                             dxy_of_smallest_dist = dxy
+                            print("smallest distance is now ", smallest_dist_so_far, " at ", curr_time)
                             # if (drow[7] != '-'):
                             #     active_disp = float(drow[7])  # displacement resets when new small dist does
                             # else:
@@ -192,6 +214,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                         # sum_frdist += frdist
 
             else:  # not in proximity
+                # print("not in proximity")
                 already_in_proximity = False  # will end proximity event
 
             # Calculate displacements after 2s
@@ -201,6 +224,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
 
             if time_of_smallest_dist is not None:  # if there is an existing collision on record
                 if (curr_time >= time_of_smallest_dist + 5) and (not timed_out):
+                    print(wrow[0], "doing the timeout thing")
                     # if at least 5 seconds since collision passed and displacement not yet calculated
                     #  TODO make global constants for time and other stuff lol
                     # problem is that displacement can get off maybe if it is hit by another WT in this time
@@ -219,8 +243,9 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                             else dist(dxy, dxy_of_smallest_dist) / 10
                         if (vel < 150):
                             if (smallest_dist_so_far > too_close_dist) and \
-                                (smallest_dist_so_far <= necessary_distance) and \
-                                (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
+                                    (smallest_dist_so_far <= necessary_distance) and \
+                                    (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
+                                #    (smallest_dist_so_far <= necessary_distance) and \
                                 if ((curr_time - latest_committed_prox) >= 0.101):
                                     all_collisions.append(
                                         (time,  # time corrected for when def shows up
@@ -235,6 +260,15 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                                          # mins(prox_start_time),
                                          # mins(latest_prox_time))
                                     )
+                                    print("just added ", (time,
+                                                          disp,
+                                                          vel,
+                                                          True,
+                                                          wt_num,
+                                                          wxy,
+                                                          def_num,
+                                                          prox_duration,
+                                                          smallest_dist_so_far))
                                     latest_committed_prox = latest_prox_time
                                 else:
                                      print((mins(curr_time), wt_num, "better luck next time - timed out btw"))
@@ -245,5 +279,5 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
             # last_dxy = dxy
         last_time = curr_time
     time_with_def = last_time - def_start  # i added this new - check if it works right?
-    print("HEY BABY I GOT ", len(all_collisions))
+    print("END OF WT ", wt_num, " :: ", len(all_collisions))
     return (all_collisions, time_with_def)
