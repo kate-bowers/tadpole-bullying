@@ -76,9 +76,9 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
         counter = 0
         for drow, wrow in zip(def_reader, wt_reader):
             counter += 1
-            # if counter > 1800:  # just look at the first minute for now
+            if counter > 28500:  # look at first 15:45 ish (end of my annotated collision list)
                 # in orig results contains 1 ongoing and one graze
-            #     break
+                 break
 
             if float(drow[0]) < float(def_start): continue  # if the def tadpole isnt here yet, ignore
 
@@ -116,7 +116,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                 # print(wrow)
                 # print("in sig distance")
                 if ((not already_in_proximity) and (distance > too_close_dist)):  # new proximity event to follow
-                    print(wrow[0], distance, "new event")
+                    print(mins(curr_time), distance, "new event")
                     # Close any ongoing proximity event, record collision if it is valid
                     if (prox_start_time is not None) and (not timed_out):
                         # If the collision is valid, record it
@@ -185,7 +185,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
 
                 # Not a new event, but the next timepoint in an ongoing event
                 elif (already_in_proximity):
-                    print(wrow[0], distance, "continuing")
+                    print(mins(curr_time), distance, "continuing")
                     prox_duration += 1
                     latest_prox_time = curr_time
                     if (curr_time < time_of_smallest_dist + 2):  # it's been less than 2s since we found the smallest dist
@@ -224,7 +224,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
 
             if time_of_smallest_dist is not None:  # if there is an existing collision on record
                 if (curr_time >= time_of_smallest_dist + 5) and (not timed_out):
-                    print(wrow[0], "doing the timeout thing")
+                    print(mins(curr_time), "doing the timeout thing")
                     # if at least 5 seconds since collision passed and displacement not yet calculated
                     #  TODO make global constants for time and other stuff lol
                     # problem is that displacement can get off maybe if it is hit by another WT in this time
