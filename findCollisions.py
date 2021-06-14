@@ -97,10 +97,12 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
             # One of my experiment files was calibrated wrong and has all distances off by a factor of 10
             # This corrects for distance discrepancy
             if (wrong_distances):
-                significant_distance = 40
+                significant_distance = 60
+                necessary_distance = 40
                 too_close_dist = 5
             else:
-                significant_distance = 4
+                significant_distance = 6
+                necessary_distance = 4
                 too_close_dist = 0.5
 
             # Now we look for collisions
@@ -124,6 +126,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
 
                             if (vel < 150):
                                 if (smallest_dist_so_far > too_close_dist) and \
+                                        (smallest_dist_so_far <= necessary_distance) and \
                                         (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
                                     if (curr_time - latest_committed_prox >= 0.101):
                                         all_collisions.append(
@@ -134,8 +137,10 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                                              wt_num,
                                              wxy,
                                              def_num,
-                                             prox_duration)  # ,
-                                             # prox_start_time)
+                                             prox_duration,
+                                             smallest_dist_so_far) # ,
+                                             # mins(prox_start_time),
+                                             # mins(latest_prox_time))
                                         )
                                         latest_committed_prox = latest_prox_time
                             # End work on old event
@@ -214,7 +219,8 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                             else dist(dxy, dxy_of_smallest_dist) / 10
                         if (vel < 150):
                             if (smallest_dist_so_far > too_close_dist) and \
-                                    (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
+                                (smallest_dist_so_far <= necessary_distance) and \
+                                (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
                                 if ((curr_time - latest_committed_prox) >= 0.101):
                                     all_collisions.append(
                                         (time,  # time corrected for when def shows up
@@ -224,8 +230,10 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                                          wt_num,
                                          wxy,
                                          def_num,
-                                         prox_duration) # ,
-                                         # prox_start_time)
+                                         prox_duration,
+                                         smallest_dist_so_far) # ,
+                                         # mins(prox_start_time),
+                                         # mins(latest_prox_time))
                                     )
                                     latest_committed_prox = latest_prox_time
                                 else:
@@ -237,4 +245,5 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
             # last_dxy = dxy
         last_time = curr_time
     time_with_def = last_time - def_start  # i added this new - check if it works right?
+    print("HEY BABY I GOT ", len(all_collisions))
     return (all_collisions, time_with_def)
