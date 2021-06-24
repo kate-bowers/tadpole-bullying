@@ -26,7 +26,7 @@ def find_collisions_per_video(datfile, csvs_path):
     for sub in range(1, num_tads):  # calculate for all
         if sub == def_num:  # skip deformed lol
             continue
-        result = findCollisions.find_collisions(sub, def_num, csvs_path, wrong_distances, def_start_time, all_collisions)
+        result = findCollisionsClasses.find_collisions(sub, def_num, csvs_path, wrong_distances, def_start_time, all_collisions)
         all_collisions = list(result[0])
         # coll_times = result[2]
 

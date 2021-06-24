@@ -5,7 +5,6 @@
 # event.py -- class declaration for Event class
 
 from utilities import mins, PROXIMITY_DISTANCE, NECESSARY_DISTANCE, TOO_CLOSE
-from isRedundant import is_redundant
 
 
 # TODO i want to get rid of timed_out as a concept but should just implement classes in general first
@@ -51,7 +50,7 @@ class Event:
 # self.collision_disp = dist(dxy, dxy_of_smallest_dist) if not wrong_distances \
 #     else dist(dxy, dxy_of_smallest_dist) / 10
 class Collision:
-    def __init__(self, time, disp, vel, clean, wt_num, wxy, def_num, duration, dist):
+    def __init__(self, time, disp, vel, clean, wt_num, wxy, def_num, duration, distance):
         self.time = time
         self.vel = vel
         self.disp = disp
@@ -60,16 +59,16 @@ class Collision:
         self.wxy = wxy
         self.def_num = def_num
         self.duration = duration
-        self.dist = dist
+        self.distance = distance
 
     def printSelf(self):
-        print(
+        print("just added, ",
             mins(self.time),
             self.vel,
             self.disp,
             self.clean,
             self.wt_num,
             self.duration,
-            self.dist
+            self.distance
         )
 

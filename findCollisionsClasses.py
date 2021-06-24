@@ -69,17 +69,8 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                 distance = distance / 10
             # One of my experiment files was calibrated wrong and has all distances off by a factor of 10
             # This corrects for distance discrepancy
-            # if (wrong_distances):
-            #     significant_distance = 50
-            #     necessary_distance = 40
-            #     too_close_dist = 5
-            # else:
-            #     significant_distance = 5
-            #     necessary_distance = 4
-            #     too_close_dist = 0.5
 
             # Now we look for collisions
-
             if ((distance <= PROXIMITY_DISTANCE)):  # within significant proximity to deformed
                 if ((not already_in_proximity) and (distance > TOO_CLOSE)):  # new proximity event to follow
 
@@ -91,27 +82,28 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                         if (WTevents[-1] != currEvent):   # CHECK
                             print("AHHHHHHH")
                             return
+                        else:
+                            print("ur good")
                         if not currEvent.timed_out:
-                            if (currEvent.collisionValid()):
-                                # maybe a probelm here is passing the wxy and not the collision wxy
-                                # for right now i should just pass the current wxy to try to replicate results
-                                if not(is_redundant(all_collisions, (currEvent.collision_time, wt_num,
-                                                                    wxy), wrong_distances)):
-                                    # add colliison
-                                    return # TODO ADD COLLISION LOL and modify velocity if wrong distances
-                                    # if (wrong_distances):
-                                    #     vel = currEvent. / 10
-                        # if (prox_duration > 1) and (vel_of_smallest_dist != "-"):
-                        #     # Calculate time, vel, disp
-                        #     # TODO figure out what time should be? idk what was changed
-                        #     time = time_of_smallest_dist # - float( TODO i made it just tosd
-                        #         # def_start) + 1.034)  # @@@@@ woooo change mee back when u need to compare
-                        #     vel = float(vel_of_smallest_dist) if not wrong_distances \
-                        #         else float(vel_of_smallest_dist) / 10
-                        #     disp = dist(dxy, dxy_of_smallest_dist) if not wrong_distances \
-                        #         else dist(dxy, dxy_of_smallest_dist) / 10
+                            if (currEvent.collision_vel != "-"):
+                                correctedVel = float(currEvent.collision_vel) if not wrong_distances \
+                                    else correctedVel = float(currEvent.collision_vel) / 10
+                                currEvent.collision_vel = correctedVel
+                                if (currEvent.collisionValid()):  # vel, distance, etc check
+                                    if not(is_redundant(all_collisions, (currEvent.collision_time, wt_num,
+                                                                        wxy), wrong_distances)):  # redundant check
+                                        # Create and record new collision
+                                        disp = dist(dxy, currEvent.collision_dxy) if not wrong_distances \
+                                            else dist(dxy, currEvent.collision_dxy) / 10
+                                        collisionNew = Collision(currEvent.collision_time, disp, currEvent.collision_vel,
+                                                                 False, currEvent.wt_num, currEvent.collision_wxy,
+                                                                 currEvent.def_num, currEvent.duration,
+                                                                 currEvent.collision_dist)
+                                        all_collisions.append(collisionNew)
+                                        collisionNew.printSelf()
+
                     # Create and add new event
-                    currEvent = Event(curr_time, distance, wrow[8], dxy, wxy, def_num, wt_num, )
+                    currEvent = Event(curr_time, distance, wrow[8], dxy, wxy, def_num, wt_num)
                     WTevents.append(currEvent)
                     already_in_proximity = True  # for future timepoints
 
