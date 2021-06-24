@@ -29,9 +29,9 @@ def is_redundant(collisions_so_far, curr_coll, wrong_distances):  # tells whethe
                 distance = dist(coll[5], xy) / 10
             else:
                 distance = dist(coll[5], xy)
-            print("maybeing, ", distance)
+            print("maybeing, ", identity, " and ", coll[4], " ", distance)
 
-            if (distance <= 3):  # within one mm idk lol
+            if (distance <= 3):  # within 3mm idk lol
                 print("redundant too close, ", distance, mins(time), mins(coll[0]), identity, coll[4])
                 return True
 

@@ -6,10 +6,12 @@
 
 import os
 import csv
-from utilities import dist, mins
+from utilities import dist, mins, TOO_CLOSE, NECESSARY_DISTANCE, PROXIMITY_DISTANCE
 from isRedundant import is_redundant
+from event import Event, Collision
 
 # branching this is probably best bet
+
 
 def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_collisions):
     print("starting ", wt_num)
@@ -26,30 +28,23 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
             next(wt_reader)
             next(def_reader)
 
-        # Initialize variables for tracking proximity event details
+        # Initialize variables for tracking events in this WT csv
         already_in_proximity = False
-        prox_start_time = None
-        prox_duration = 0
-        latest_committed_prox = 0  # there is no collisions listed yet
-        smallest_dist_so_far = None
-        vel_of_smallest_dist = None
-        time_of_smallest_dist = None
-        dxy_of_smallest_dist = []
-        timed_out = False
+        WTevents = []
+        currEvent = None
+
         first_prox_window = True  # this is the window where the collision timestamp happens
 
-        # active_disp = None # I DONT THINK THIS DOES ANYTHING?
         num_lost = 0
         w_lost = 0  # i don't ever really use these trackers though?
         d_lost = 0
 
-        # last_dxy = None # hmm what do i even use this for? "frdist" - not sure thats relevant anymore
-        counter = 0
+        counter = 0 # temporary
         for drow, wrow in zip(def_reader, wt_reader):
             counter += 1
             if counter > 28500:  # look at first 15:45 ish (end of my annotated collision list)
                 # in orig results contains 1 ongoing and one graze
-                break
+                 break
 
             if float(drow[0]) < float(def_start): continue  # if the def tadpole isnt here yet, ignore
 
@@ -70,126 +65,65 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
             # Calculate distance between tadpoles
             dxy[0], dxy[1], wxy[0], wxy[1] = float(dxy[0]), float(dxy[1]), float(wxy[0]), float(wxy[1])
             distance = dist(dxy, wxy)
-
+            if (wrong_distances):
+                distance = distance / 10
             # One of my experiment files was calibrated wrong and has all distances off by a factor of 10
             # This corrects for distance discrepancy
-            if (wrong_distances):
-                significant_distance = 50
-                necessary_distance = 40
-                too_close_dist = 5
-            else:
-                significant_distance = 5
-                necessary_distance = 4
-                too_close_dist = 0.5
+            # if (wrong_distances):
+            #     significant_distance = 50
+            #     necessary_distance = 40
+            #     too_close_dist = 5
+            # else:
+            #     significant_distance = 5
+            #     necessary_distance = 4
+            #     too_close_dist = 0.5
 
             # Now we look for collisions
-            if ((distance <= significant_distance)):  # within significant proximity to deformed
-                # print(wrow)
-                # print("in sig distance")
-                if ((not already_in_proximity) and (distance > too_close_dist)):  # new proximity event to follow
+
+            if ((distance <= PROXIMITY_DISTANCE)):  # within significant proximity to deformed
+                if ((not already_in_proximity) and (distance > TOO_CLOSE)):  # new proximity event to follow
+
                     print(mins(curr_time), distance, "new event")
+                    # ddeal with existing event
+                    # then make new one
                     # Close any ongoing proximity event, record collision if it is valid
-                    if (prox_start_time is not None) and (not timed_out):
-                        # If the collision is valid, record it
-                        # (future) Do not count a "collision" that happens less than
-                        # 3 time points since the last logged proximity
-                        if (prox_duration > 1) and (vel_of_smallest_dist != "-"):
-                            # Calculate time, vel, disp
-                            # TODO figure out what time should be? idk what was changed
-                            time = time_of_smallest_dist # - float( TODO i made it just tosd
-                                # def_start) + 1.034)  # @@@@@ woooo change mee back when u need to compare
-                            vel = float(vel_of_smallest_dist) if not wrong_distances \
-                                else float(vel_of_smallest_dist) / 10
-                            disp = dist(dxy, dxy_of_smallest_dist) if not wrong_distances \
-                                else dist(dxy, dxy_of_smallest_dist) / 10
-
-                            if (vel < 150):
-                                if (smallest_dist_so_far > too_close_dist) and \
-                                        (smallest_dist_so_far <= necessary_distance) and \
-                                        (not is_redundant(all_collisions, (time, wt_num, wxy), wrong_distances)):
-                                    #           (smallest_dist_so_far <= necessary_distance) and \
-                                    if (curr_time - latest_committed_prox >= 0.101):
-                                        all_collisions.append(
-                                            (time,  # time corrected for when def shows up
-                                             disp,
-                                             vel,
-                                             False,
-                                             wt_num,
-                                             wxy,
-                                             def_num,
-                                             prox_duration,
-                                             smallest_dist_so_far) # ,
-                                             # mins(prox_start_time),
-                                             # mins(latest_prox_time))
-                                        )
-                                        print("just added ", (time,
-                                             disp,
-                                             vel,
-                                             False,
-                                             wt_num,
-                                             wxy,
-                                             def_num,
-                                             prox_duration,
-                                             smallest_dist_so_far))
-                                        latest_committed_prox = latest_prox_time
-
-                            # End work on old event
-                                    else:
-                                         print((mins(curr_time), wt_num, "better luck next time"))
-
-                    # Initialize variables for new event
-                    prox_start_time = curr_time
-                    latest_prox_time = curr_time
-                    first_prox_window = True
-                    timed_out = False
+                    if (len(WTevents) != 0):
+                        if (WTevents[-1] != currEvent):   # CHECK
+                            print("AHHHHHHH")
+                            return
+                        if not currEvent.timed_out:
+                            if (currEvent.collisionValid()):
+                                # maybe a probelm here is passing the wxy and not the collision wxy
+                                # for right now i should just pass the current wxy to try to replicate results
+                                if not(is_redundant(all_collisions, (currEvent.collision_time, wt_num,
+                                                                    wxy), wrong_distances)):
+                                    # add colliison
+                                    return # TODO ADD COLLISION LOL and modify velocity if wrong distances
+                                    # if (wrong_distances):
+                                    #     vel = currEvent. / 10
+                        # if (prox_duration > 1) and (vel_of_smallest_dist != "-"):
+                        #     # Calculate time, vel, disp
+                        #     # TODO figure out what time should be? idk what was changed
+                        #     time = time_of_smallest_dist # - float( TODO i made it just tosd
+                        #         # def_start) + 1.034)  # @@@@@ woooo change mee back when u need to compare
+                        #     vel = float(vel_of_smallest_dist) if not wrong_distances \
+                        #         else float(vel_of_smallest_dist) / 10
+                        #     disp = dist(dxy, dxy_of_smallest_dist) if not wrong_distances \
+                        #         else dist(dxy, dxy_of_smallest_dist) / 10
+                    # Create and add new event
+                    currEvent = Event(curr_time, distance, wrow[8], dxy, wxy, def_num, wt_num, )
+                    WTevents.append(currEvent)
                     already_in_proximity = True  # for future timepoints
-                    prox_duration = 1
-                    smallest_dist_so_far = distance
-                    vel_of_smallest_dist = wrow[8]
-                    time_of_smallest_dist = curr_time
-                    dxy_of_smallest_dist = dxy
-                    # sum_movement = 0  # I don't think these are relevant but not deleting yet
-                    # sum_frdist = 0
-                    # if (drow[7] != '-'):  # set new active disp
-                    #     active_disp = float(drow[7])
-                    # else:
-                    #     active_disp = 0
 
                 # Not a new event, but the next timepoint in an ongoing event
                 elif (already_in_proximity):
                     print(mins(curr_time), distance, "continuing")
-                    prox_duration += 1
-                    latest_prox_time = curr_time
-                    if (curr_time < time_of_smallest_dist + 2):  # it's been less than 2s since we found the smallest dist
-                        if (distance < smallest_dist_so_far) and \
-                                (distance > too_close_dist):  # Update if this is the smallest distance so far
-                            # TODO should be more than min distance though -- added 6/13
-                            smallest_dist_so_far = distance
-                            vel_of_smallest_dist = wrow[8]
-                            time_of_smallest_dist = curr_time
-                            dxy_of_smallest_dist = dxy
-                            print("smallest distance is now ", smallest_dist_so_far, " at ", curr_time)
-                            # if (drow[7] != '-'):
-                            #     active_disp = float(drow[7])  # displacement resets when new small dist does
-                            # else:
-                            #    active_disp = 0    # IDK WHAT ALL THESE ACTIVE DISP THINGS ARE
-                        # else:  # not a new smaller dist
-                        #    if (drow[7] != '-'):
-                        #        active_disp += float(drow[7])  # update active displacement
-
-                    # if (not timed_out):  # TODO is any of this relevant?
-                        # frdist = (dist(dxy, last_dxy))  # again, IDK what this is
-                        # if (drow[7] == '-'):  # no movement
-                        #     sum_movement += 0
-                        # else:
-                        #    sum_movement += float(drow[7])
-                        # sum_frdist += frdist
-
-
-
+                    currEvent.updateSelf(distance, curr_time, wrow[8], dxy, wxy)
+                    WTevents[-1] = currEvent  # update complete list
             else:  # not in proximity
                 # print("not in proximity")
                 already_in_proximity = False  # will end proximity event
+
 
             # Calculate displacements after 2s
             # this is a problem because just because there's A smallest dist doesn't mean it'll be THE smallest dist?

@@ -8,6 +8,9 @@ import math
 import os
 import csv
 
+PROXIMITY_DISTANCE = 5
+NECESSARY_DISTANCE = 4
+TOO_CLOSE = 0.5
 
 def dist(p1, p2):
     """Calculates Euclidean distance between two XY coordinate sets"""

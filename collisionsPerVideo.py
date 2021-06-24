@@ -5,7 +5,7 @@
 # collisionsPerVideo.py -- for a given video csv folder, computes all collisions between WT and deformed tadpoles
 
 from utilities import mins, find_def_start_time
-import findCollisions
+import findCollisionsClasses # UPDATED FOR CLASSES BRANCH
 
 
 def find_collisions_per_video(datfile, csvs_path):
