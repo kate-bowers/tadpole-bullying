@@ -27,7 +27,6 @@ class Event:
         if (self.duration > 1) and (self.collision_vel != "-"):
             if (self.collision_vel < 150) and \
                     (TOO_CLOSE < (self.collision_dist) < NECESSARY_DISTANCE):
-                # TODO Can't fit is_redundant into this scope: check beforehand - must add for good functionality
                 return True
         return False
 

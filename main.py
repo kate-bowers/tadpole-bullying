@@ -37,7 +37,7 @@ for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each
 for video in collision_masterlist:
 	# plotAll.makePlots(video, min_def_time)
 	for coll in video:
-		print(mins(coll[0]), coll)  # mins(coll[8]), coll)
+		coll.printSelf()  # mins(coll[8]), coll)
 	break  # just look at first vid
 
 

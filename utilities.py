@@ -12,6 +12,7 @@ PROXIMITY_DISTANCE = 5
 NECESSARY_DISTANCE = 4
 TOO_CLOSE = 0.5
 
+
 def dist(p1, p2):
     """Calculates Euclidean distance between two XY coordinate sets"""
     x1 = p1[0]
@@ -43,6 +44,5 @@ def find_def_start_time(def_num, csvs_path):
 
         for drow in def_reader:
             not_started = (drow[2] == "-")  # is location of deformed tadpole undefined
-            if not not_started:  # location is known!
-                print(mins(drow[0]))
+            if not not_started:  # location is known, not_started is false
                 return float(drow[0])
