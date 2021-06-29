@@ -44,14 +44,14 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
             counter += 1
             if counter > 28500:  # look at first 15:45 ish (end of my annotated collision list)
                 # in orig results contains 1 ongoing and one graze
-                 break
-
-            if float(drow[0]) < float(def_start): continue  # if the def tadpole isnt here yet, ignore
+                break
+            if float(drow[0]) < float(def_start):
+                continue  # if the def tadpole isnt here yet, ignore
 
             dxy = drow[2:4]
             wxy = wrow[2:4]
             curr_time = float(wrow[0])
-            #curr_vel = float(wrow[8])
+            # curr_vel = float(wrow[8])
 
             # Filter out timepoints where either tadpole is lost
             if wxy[0] == "-":
@@ -86,8 +86,8 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                             print("ur good")
                         if not currEvent.timed_out:
                             if (currEvent.collision_vel != "-"):
-                                correctedVel = float(currEvent.collision_vel) if not wrong_distances \
-                                    else correctedVel = float(currEvent.collision_vel) / 10
+                                correctedVel = float(currEvent.collision_vel) / 10 if wrong_distances \
+                                    else float(currEvent.collision_vel)
                                 currEvent.collision_vel = correctedVel
                                 if (currEvent.collisionValid()):  # vel, distance, etc check
                                     if not(is_redundant(all_collisions, (currEvent.collision_time, wt_num,

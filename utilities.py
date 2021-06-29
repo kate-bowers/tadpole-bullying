@@ -45,4 +45,4 @@ def find_def_start_time(def_num, csvs_path):
             not_started = (drow[2] == "-")  # is location of deformed tadpole undefined
             if not not_started:  # location is known!
                 print(mins(drow[0]))
-                return drow[0]
+                return float(drow[0])
