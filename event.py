@@ -21,6 +21,8 @@ class Event:
         self.timed_out = False
         self.def_num = def_num
         self.wt_num = wt_num
+        self.collision_window_open = False
+        # self.collision_
 
     # collisionValid returns True if the event at its current state is a valid collision to record, False if not
     def collisionValid(self):
@@ -33,8 +35,9 @@ class Event:
     # updateSelf always updates the event duration, and the collision details if needed
     def updateSelf(self, distance, curr_time, curr_vel, curr_dxy, curr_wxy):
         self.duration += 1
-        if (curr_time < self.collision_time + 2): # less than 2s since last updated coll time
-            if (TOO_CLOSE < distance < self.collision_dist):
+        # self.collision_window_open and
+        if curr_time < self.collision_time + 2: # less than 2s since last updated coll time
+            if TOO_CLOSE < distance < self.collision_dist:
                 self.collision_dist = distance
                 self.collision_vel = curr_vel
                 self.collision_time = curr_time

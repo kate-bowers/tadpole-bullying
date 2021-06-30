@@ -86,7 +86,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                                     else float(currEvent.collision_vel)
                                 if currEvent.collisionValid():  # vel, distance, etc check
                                     if not (is_redundant(all_collisions, (currEvent.collision_time, wt_num,
-                                                                          wxy), wrong_distances)):  # TODO FIX WXY THING
+                                                                          currEvent.collision_wxy), wrong_distances)):
                                         # Create and record new collision
                                         disp = dist(dxy, currEvent.collision_dxy) if not wrong_distances \
                                             else dist(dxy, currEvent.collision_dxy) / 10
@@ -100,14 +100,19 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
 
                     # Create and add new event
                     currEvent = Event(curr_time, distance, wrow[8], dxy, wxy, def_num, wt_num)
+                    currEvent.collision_window_open = True if distance <= NECESSARY_DISTANCE else False
+                    # if distance is within the necessary window for a valid collision,
+                    # then allow looking for collisions
                     WTevents.append(currEvent)
                     already_in_proximity = True  # for future timepoints
 
                 # Not a new event, but the next timepoint in an ongoing event
                 elif already_in_proximity:
                     print(mins(curr_time), distance, "continuing")
+                    currEvent.collision_window_open = True if distance <= NECESSARY_DISTANCE else False
                     currEvent.updateSelf(distance, curr_time, wrow[8], dxy, wxy)
                     WTevents[-1] = currEvent  # update complete list
+
             else:  # not in proximity
                 # print("not in proximity")
                 already_in_proximity = False  # will end proximity event
@@ -130,7 +135,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                             else float(currEvent.collision_vel)
                         if currEvent.collisionValid():  # vel, distance, etc check
                             if not (is_redundant(all_collisions, (currEvent.collision_time, wt_num,
-                                                                  wxy), wrong_distances)):  # TODO FIX WXY
+                                                                  currEvent.collision_wxy), wrong_distances)):
                                 # Create and record new collision
                                 disp = dist(dxy, currEvent.collision_dxy) if not wrong_distances \
                                     else dist(dxy, currEvent.collision_dxy) / 10
