@@ -49,7 +49,7 @@ class Event:
                 self.collision_dxy = curr_dxy
                 self.collision_wxy = curr_wxy
                 self.collision_duration = 1
-                print("updated distance to ", self.collision_dist, " at ", curr_time)
+                #print("updated distance to ", self.collision_dist, " at ", curr_time)
 
     # determine if this event's collision is all set to record
     def tryAddCollision(self, wrong_distances, all_collisions, dxy, clean, end_time):

@@ -46,3 +46,17 @@ def find_def_start_time(def_num, csvs_path):
             not_started = (drow[2] == "-")  # is location of deformed tadpole undefined
             if not not_started:  # location is known, not_started is false
                 return float(drow[0])
+
+def makeSteps(collisions, timepoints):
+    '''Converts list of collisions by one subject over time into data to be plotted in pulse plot'''
+    steps = [0]*len(timepoints)
+    # each timepoint is a float
+    for c in collisions:
+        i = timepoints.index(c.time)
+        end_i = timepoints.index(c.end_time)
+        print(i)
+        while i < end_i:
+            steps[i] = c.vel
+            i += 1
+    print("finished making steps")
+    return steps
