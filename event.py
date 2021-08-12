@@ -23,6 +23,7 @@ class Event:
         self.wt_num = wt_num
         self.collision_window_open = False
         self.collision_found = False
+        self.collision_duration = 0
 
     # collisionValid returns True if the event at its current state is a valid collision to record, False if not
     # helper function to tryAddCollision
@@ -36,6 +37,7 @@ class Event:
     # updateSelf always updates the event duration, and the collision details if needed
     def updateSelf(self, distance, curr_time, curr_vel, curr_dxy, curr_wxy):
         self.duration += 1
+        self.collision_duration += 1
         # self.collision_window_open and
         if self.collision_window_open and \
                 not self.collision_found and \
@@ -46,10 +48,11 @@ class Event:
                 self.collision_time = curr_time
                 self.collision_dxy = curr_dxy
                 self.collision_wxy = curr_wxy
+                self.collision_duration = 1
                 print("updated distance to ", self.collision_dist, " at ", curr_time)
 
     # determine if this event's collision is all set to record
-    def tryAddCollision(self, wrong_distances, all_collisions, dxy, clean):
+    def tryAddCollision(self, wrong_distances, all_collisions, dxy, clean, end_time):
         if self.collision_vel != "-":
             self.collision_vel = float(self.collision_vel) / 10 if wrong_distances \
                 else float(self.collision_vel)  # this is a very local change
@@ -63,7 +66,9 @@ class Event:
                     collisionNew = Collision(self.collision_time, disp,
                                              self.collision_vel,
                                              clean, self.wt_num, self.collision_wxy,
-                                             self.def_num, self.duration,
+                                             self.def_num,
+                                             self.collision_duration, self.duration,
+                                             end_time,
                                              self.collision_dist)
                     return collisionNew
 
@@ -73,7 +78,7 @@ class Event:
 # self.collision_disp = dist(dxy, dxy_of_smallest_dist) if not wrong_distances \
 #     else dist(dxy, dxy_of_smallest_dist) / 10
 class Collision:
-    def __init__(self, time, disp, vel, clean, wt_num, wxy, def_num, duration, distance):
+    def __init__(self, time, disp, vel, clean, wt_num, wxy, def_num, collision_duration, eventduration, end_time, distance):
         self.time = time
         self.vel = vel
         self.disp = disp
@@ -81,12 +86,14 @@ class Collision:
         self.wt_num = wt_num
         self.wxy = wxy
         self.def_num = def_num
-        self.duration = duration
+        self.event_duration = eventduration
+        self.collision_duration = collision_duration
+        self.end_time = end_time
         self.distance = distance
 
     def printSelf(self):
         print(mins(self.time), tuple((self.time, self.disp, self.vel, self.clean, self.wt_num,
-              self.wxy, self.def_num, self.duration, self.distance)))
+              self.wxy, self.def_num, self.event_duration, self.collision_duration, self.end_time, self.distance)))
         '''
         print("just added, ",
             mins(self.time),

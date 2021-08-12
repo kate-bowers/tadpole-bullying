@@ -40,7 +40,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
         w_lost = 0  # i don't ever really use these trackers though?
         d_lost = 0
 
-        counter = 0  # temporary
+        counter = 0  # temporary for time limiting
         for drow, wrow in zip(def_reader, wt_reader):
             counter += 1
             if counter > 28500:  # look at first 15:45 ish (end of my annotated collision list)
@@ -80,7 +80,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                     if len(WTevents) != 0:
                         # currEvent is the last event in WTevents
                         if not currEvent.timed_out:
-                            collisionNew = currEvent.tryAddCollision(wrong_distances, all_collisions, dxy, False)
+                            collisionNew = currEvent.tryAddCollision(wrong_distances, all_collisions, dxy, False, curr_time)
                             if collisionNew is not None:
                                 all_collisions.append(collisionNew)
                                 collisionNew.printSelf()
@@ -104,7 +104,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                     # check if there was a legit collision in this window (if we havent found it yet)
                     if currEvent.collision_window_open and distance >= NECESSARY_DISTANCE \
                             and not currEvent.collision_found:
-                        collisionNew = currEvent.tryAddCollision(wrong_distances, all_collisions, dxy, False)
+                        collisionNew = currEvent.tryAddCollision(wrong_distances, all_collisions, dxy, False, curr_time)
                         # TODO does this negate "clean" collisions?
                         if collisionNew is not None:  # valid collision found in the past window
                             currEvent.collision_found = True
@@ -120,12 +120,13 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
             else:  # not in proximity, event should e ending/over
                 # print("not in proximity")
                 if already_in_proximity:  # end of proximity event, should record now # TODO wait for two timepoints after leaving?
-                    collisionNew = currEvent.tryAddCollision(wrong_distances, all_collisions, dxy, True)
+                    collisionNew = currEvent.tryAddCollision(wrong_distances, all_collisions, dxy, True, curr_time)
                     if collisionNew is not None:
                         all_collisions.append(collisionNew)
                         collisionNew.printSelf()
 
                         currEvent.collision_found = True
+
                         WTevents[-1] = currEvent
                         print("added new via end of prox")
                 already_in_proximity = False  # will end proximity event
@@ -151,7 +152,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
             #                 if not (is_redundant(all_collisions, (currEvent.collision_time, wt_num,
             #                                                       currEvent.collision_wxy), wrong_distances)):
             #                     # Create and record new collision
-            #                     # print("FUCKO")
+            #                     # print("hey")
             #
             #                     disp = dist(dxy, currEvent.collision_dxy) if not wrong_distances \
             #                         else dist(dxy, currEvent.collision_dxy) / 10

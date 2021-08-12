@@ -55,6 +55,6 @@ def find_collisions_per_video(datfile, csvs_path):
     '''
 
     # would call plotting thigns now
-
+    
     return (all_collisions_flat_bytime, time_with_def)
 
