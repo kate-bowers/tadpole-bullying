@@ -21,17 +21,17 @@ def is_redundant(collisions_so_far, curr_coll, wrong_distances):
         other_wxy = coll.wxy
         if abs(time - other_time) <= 0.5: # within half a second
             distance = dist(other_wxy, xy) / 10 if wrong_distances else dist(other_wxy, xy)
-            print("maybeing, ", identity, " and ", other_id, " ", distance)
+            # print("maybeing, ", identity, " and ", other_id, " ", distance)
 
             if distance <= 3:  # within 3mm idk lol
-                print("redundant too close, ", distance, mins(time), mins(other_time), identity, other_id)
+                # print("redundant too close, ", distance, mins(time), mins(other_time), identity, other_id)
                 return True
 
             if identity == other_id:
-                print("redundant with self", mins(time), mins(other_time), identity, other_id)
+                # print("redundant with self", mins(time), mins(other_time), identity, other_id)
                 return True
 
-            else:
-                print("naurrrr \n but yeet dist was ", distance, mins(time), mins(other_time), identity, other_id)
+            # else:
+                # print("naurrrr \n but yeet dist was ", distance, mins(time), mins(other_time), identity, other_id)
 
     return False

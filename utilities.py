@@ -54,9 +54,7 @@ def makeSteps(collisions, timepoints):
     for c in collisions:
         i = timepoints.index(c.time)
         end_i = timepoints.index(c.end_time)
-        print(i)
-        while i < end_i:
+        while i < end_i: #TODO is this the same as coll duration?
             steps[i] = c.vel
             i += 1
-    print("finished making steps")
     return steps

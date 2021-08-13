@@ -45,19 +45,51 @@ def find_collisions_per_video(datfile, csvs_path):
     #  do the plot here TODO ayy
     cmap = plt.cm.get_cmap("hsv", len(all_steps))
     print("made cmap")
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, (axoutlier, axmost) = plt.subplots(2, 1, sharex=True, gridspec_kw={'height_ratios':[6,12]})
+    fig.subplots_adjust(hspace=0.05)
+
     print("made fig ax")
-    plt.ylim(0,20)
-    #plt.xlim(0,25)
+
     #plt.xticks(timeline)
     #print("made xticks")
 
     for i in np.arange(0, len(all_steps)):
-        print("steppping")
-        plt.step(timeline, all_steps[i], c=cmap(i), where='post')
-        print("done")
+        axmost.step(timeline, all_steps[i], c=cmap(i), where='post')
+        axoutlier.step(timeline, all_steps[i], c=cmap(i), where='post')
         #break
         #scatter(X, Y, c=cmap(i))
+
+    axmost.set_ylim(0, 12.5)
+    axoutlier.set_yticks([25, 50, 75, 100, 125, 150, 175])
+    #axmost.set_xlim(250, 400)
+    axoutlier.set_ylim(12.5, 140)
+    #axoutlier.set_xlim(250, 400)
+
+    box = axoutlier.get_position()
+    print(box)
+    box2 = axmost.get_position()
+    print(box)
+    # plt.show()
+
+    # axoutlier.spines.bottom.set_visible(False)
+    # axmost.spines.top.set_visible(False)
+    # axoutlier.xaxis.tick_top()
+    #axoutlier.tick_params(labeltop=False)  # don't put tick labels at the top
+    #axmost.xaxis.tick_bottom()
+
+    # Now, let's turn towards the cut-out slanted lines.
+    # We create line objects in axes coordinates, in which (0,0), (0,1),
+    # (1,0), and (1,1) are the four corners of the axes.
+    # The slanted lines themselves are markers at those locations, such that the
+    # lines keep their angle and position, independent of the axes size or scale
+    # Finally, we need to disable clipping.
+
+    d = .5  # proportion of vertical to horizontal extent of the slanted line
+    kwargs = dict(marker=[(-1, -d), (1, d)], markersize=12,
+                  linestyle="none", color='k', mec='k', mew=1, clip_on=False)
+    axoutlier.plot([0, 1], [0, 0], transform=axoutlier.transAxes, **kwargs)
+    axmost.plot([0, 1], [1, 1], transform=axmost.transAxes, **kwargs)
+
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
     plt.show()
