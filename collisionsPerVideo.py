@@ -65,10 +65,10 @@ def find_collisions_per_video(datfile, csvs_path):
     axoutlier.set_ylim(12.5, 140)
     #axoutlier.set_xlim(250, 400)
 
-    box = axoutlier.get_position()
-    print(box)
-    box2 = axmost.get_position()
-    print(box)
+    # box = axoutlier.get_position()
+    # print(box)
+    # box2 = axmost.get_position()
+    # print(box)
     # plt.show()
 
     # axoutlier.spines.bottom.set_visible(False)
@@ -92,11 +92,53 @@ def find_collisions_per_video(datfile, csvs_path):
 
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
+    axoutlier.set_title("Collision duration and velocity over time \n"
+              "in 15:45 min. video" )
     plt.show()
+
     print("made show")
+    #
+    # ##### TODO this is where i did the zoom in plot
+    # cmap = plt.cm.get_cmap("hsv", len(all_steps))
+    # print("made cmap")
+    # axmost = plt.subplots(figsize=(8,4.8))
+    # #fig.subplots_adjust(hspace=0.05)
+    #
+    # print("made fig ax")
+    #
+    # # plt.xticks(timeline)
+    # # print("made xticks")
+    #
+    # for i in np.arange(0, len(all_steps)):
+    #     plt.step(timeline, all_steps[i], c=cmap(i), where='post')
+    #     #axoutlier.step(timeline, all_steps[i], c=cmap(i), where='post')
+    #     # break
+    #     # scatter(X, Y, c=cmap(i))
+    #
+    # plt.ylim(0, 12.5)
+    # #axoutlier.set_yticks([25, 50, 75, 100, 125, 150, 175])
+    # plt.xlim(250, 400)
+    # #axoutlier.set_ylim(12.5, 140)
+    # #axoutlier.set_xlim(250, 400)
+    #
+    #
+    # # plt.show()
+    # #
+    # # d = .5  # proportion of vertical to horizontal extent of the slanted line
+    # # kwargs = dict(marker=[(-1, -d), (1, d)], markersize=12,
+    # #               linestyle="none", color='k', mec='k', mew=1, clip_on=False)
+    # # axoutlier.plot([0, 1], [0, 0], transform=axoutlier.transAxes, **kwargs)
+    # # axmost.plot([0, 1], [1, 1], transform=axmost.transAxes, **kwargs)
+    #
+    # plt.xlabel("Time(s)")
+    # plt.ylabel("Collision Velocity (mm/s)")
+    # plt.show()
+    # print("made show")
+    #
+
+
 
     #####
-
     total_collisions = len(all_collisions)
     print(str(total_collisions) + " by " + str(num_tads - 1) + " wt tadpoles")  # + " in " + deformed_csv[14][1])
     print("in " + mins(time_with_def))
