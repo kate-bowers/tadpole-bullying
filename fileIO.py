@@ -5,14 +5,15 @@
 # fileIO.py -- establishes data file paths and dictionary with video data and info
 
 import os
+import glob
 
 #base_old = "/Users/katharinebowers/Desktop/Levin Lab/ethovision pipeline coding/"
-base = "/Users/katharinebowers/Desktop/control tadpole track exports/"
-data_filepath = os.path.join(base, "Ethovision Track Data Exports/")
+base = "/Users/katharinebowers/Desktop/fall21 tadpole track exports/"
+data_filepath = os.path.join(base, "Ethovision Track Data Exports/May 2021 Pebble Control Tracks")
 video_csvs_folder = os.path.join(base, "CSVs for each video/")
 
-
-datfiles_old = {   # specific to current list of info  -- TODO create filelist file?
+# old data file list from first making this - before distances, tadpole #, and def subj # were standard
+datfiles_old = {   # specific to current list of info  --
 	# format: filepath corresponds to (deformed tadpole ID number,
 	#                                  True if distances are off by a factor of 10, number of tadpoles
 	(os.path.join(data_filepath, "Raw data-Correction Copy NewVideo1_9_28_18 " +
@@ -25,9 +26,16 @@ datfiles_old = {   # specific to current list of info  -- TODO create filelist f
 		"-_good_---_35_tadpoles-Trial     2.xlsx")): (15, False, 36)
 }
 
-datfiles = {   # latest experimental stuff 9-23-2021
+
+datfiles = {
 	# format: filepath corresponds to (deformed tadpole ID number,
 	#                                  True if distances are off by a factor of 10, number of tadpoles
-	(os.path.join(data_filepath, "Raw data-2021-05-21-30-tadpoles-control-vids-Trial     5.xlsx")): (1, False, 31),
+	# (os.path.join(data_filepath, "Raw data-2021-05-21-30-tadpoles-control-vids-Trial     5.xlsx")): (1, False, 31),
 
 }
+
+excel_files = glob.glob(os.path.join(data_filepath, "*.xlsx"))  # for each video excel sheet
+for vid in excel_files:
+	datfiles[vid] = (1, False, 30)  # each of these new videos has 30 wt and the def is subj#1 and distances are right
+
+# datfiles should now be loaded
