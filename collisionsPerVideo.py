@@ -35,7 +35,7 @@ def find_collisions_per_video(datfile, csvs_path):
         timeline = result[3]
         timer = 28500 # TODO this is just the limit in steps for testing (ie first 15 min = 28500 slots)
         print("making steps for ", subject)
-        subj_steps = makeSteps(subj_collisions, list(timeline[:timer + 1]))
+        subj_steps = makeSteps(subj_collisions, list(timeline))   # [:timer + 1])) removing timer for now
         all_steps.append(list(subj_steps))
 
 

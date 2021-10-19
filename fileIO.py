@@ -6,12 +6,13 @@
 
 import os
 
-base = "/Users/katharinebowers/Desktop/Levin Lab/ethovision pipeline coding/"
+#base_old = "/Users/katharinebowers/Desktop/Levin Lab/ethovision pipeline coding/"
+base = "/Users/katharinebowers/Desktop/control tadpole track exports/"
 data_filepath = os.path.join(base, "Ethovision Track Data Exports/")
 video_csvs_folder = os.path.join(base, "CSVs for each video/")
 
 
-datfiles = {   # specific to current list of info  -- TODO create filelist file?
+datfiles_old = {   # specific to current list of info  -- TODO create filelist file?
 	# format: filepath corresponds to (deformed tadpole ID number,
 	#                                  True if distances are off by a factor of 10, number of tadpoles
 	(os.path.join(data_filepath, "Raw data-Correction Copy NewVideo1_9_28_18 " +
@@ -22,4 +23,11 @@ datfiles = {   # specific to current list of info  -- TODO create filelist file?
 		"inj deformed - good - Copy-Trial     2.xlsx")): (20, False, 36),
 	(os.path.join(data_filepath, "Raw data-RepeatVideo2_10_2_18_-_666_inj_deformed_" +
 		"-_good_---_35_tadpoles-Trial     2.xlsx")): (15, False, 36)
+}
+
+datfiles = {   # latest experimental stuff 9-23-2021
+	# format: filepath corresponds to (deformed tadpole ID number,
+	#                                  True if distances are off by a factor of 10, number of tadpoles
+	(os.path.join(data_filepath, "Raw data-2021-05-21-30-tadpoles-control-vids-Trial     5.xlsx")): (1, False, 31),
+
 }
