@@ -28,7 +28,7 @@ class Event:
     # collisionValid returns True if the event at its current state is a valid collision to record, False if not
     # helper function to tryAddCollision
     def collisionValid(self):
-        if (self.duration > 1) and (self.collision_vel != "-"):
+        if (self.collision_duration > 1) and (self.collision_vel != "-"):
             if (self.collision_vel < 150) and \
                     (TOO_CLOSE < (self.collision_dist) < NECESSARY_DISTANCE):
                 return True
@@ -43,13 +43,15 @@ class Event:
                 not self.collision_found and \
                 curr_time < self.collision_time + 2:  # less than 2s since last updated coll time
             if TOO_CLOSE < distance < self.collision_dist:
-                self.collision_dist = distance
-                self.collision_vel = curr_vel
-                self.collision_time = curr_time
-                self.collision_dxy = curr_dxy
-                self.collision_wxy = curr_wxy
-                self.collision_duration = 1
-                #print("updated distance to ", self.collision_dist, " at ", curr_time)
+                if abs(distance - self.collision_dist) >= 0.5: # TODO absolutely arbitrary guess here
+                    # TODO and the difference between last timepoint is significant?
+                    self.collision_dist = distance
+                    self.collision_vel = curr_vel
+                    self.collision_time = curr_time
+                    self.collision_dxy = curr_dxy
+                    self.collision_wxy = curr_wxy
+                    self.collision_duration = 1
+                    #print("updated distance to ", self.collision_dist, " at ", curr_time)
 
     # determine if this event's collision is all set to record
     def tryAddCollision(self, wrong_distances, all_collisions, dxy, clean, end_time):
