@@ -30,12 +30,12 @@ for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each
 		os.mkdir(output_path)
 	else:
 		print("folder already exists")
-	breakpoint()
+	#breakpoint()
 	if not os.listdir(output_path):  # if folder is empty, make CSVs
 		exceltabToCSV.excelToCSV(file, output_path)
 	else:
 		print("CSVs already exist")
-	breakpoint()
+	#breakpoint()
 
 	# Find collisions for this video
 	collision_output = perVideo.find_collisions_per_video(fileIO.datfiles[file], output_path)
@@ -44,15 +44,15 @@ for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each
 	# Keep track of latest start time for deformed tadpole tracking
 	if (min_def_time is None) or (collision_output[1] < min_def_time):
 		min_def_time = collision_output[1]
-	print("yoinks")
-	break  # just look at first vid
+	print("yoinks")  # just look at first vid
 
 # Make plots for each video
 for video in collision_masterlist:
 	# plotAll.makePlots(video, min_def_time)
+	print(" video ")
 	for coll in video:
 		coll.printSelf()  # mins(coll[8]), coll)
-	break  # just look at first vid
+	#break  # just look at first vid
 
 
 # Make plots for all videos combined

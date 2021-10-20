@@ -8,9 +8,9 @@ import math
 import os
 import csv
 
-PROXIMITY_DISTANCE = 5
-NECESSARY_DISTANCE = 4
-TOO_CLOSE = 0.5
+PROXIMITY_DISTANCE = 5.5 # was 5 for exp
+NECESSARY_DISTANCE = 5 # was 4 for exp
+TOO_CLOSE = 0.5  # was 0.5
 
 
 def dist(p1, p2):
