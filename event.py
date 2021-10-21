@@ -8,6 +8,8 @@ from utilities import mins, dist, PROXIMITY_DISTANCE, NECESSARY_DISTANCE, TOO_CL
 from isRedundant import is_redundant
 
 # TODO i want to get rid of timed_out as a concept but should just implement classes in general first
+
+
 class Event:
     # initialize Event variables for the very first timepoint of the event
     def __init__(self, start, dist, vel, dxy, wxy, def_num, wt_num):
@@ -32,6 +34,10 @@ class Event:
             if (self.collision_vel < 150) and \
                     (TOO_CLOSE < (self.collision_dist) < NECESSARY_DISTANCE):
                 return True
+            else:
+                print("failed second in val, ", self.collision_vel, " ", self.collision_dist)
+        else:
+            print("failed first in val")
         return False
 
     # updateSelf always updates the event duration, and the collision details if needed
@@ -43,8 +49,11 @@ class Event:
                 not self.collision_found and \
                 curr_time < self.collision_time + 2:  # less than 2s since last updated coll time
             if TOO_CLOSE < distance < self.collision_dist:
-                if abs(distance - self.collision_dist) >= 0.5: # TODO absolutely arbitrary guess here
+                if abs(distance - self.collision_dist) >= 0.5  or (
+                        self.collision_vel == '-' and curr_vel != '-'):
+                    # TODO absolutely arbitrary guess here
                     # TODO and the difference between last timepoint is significant?
+                    # TODO added option to update distance if last vel was null
                     self.collision_dist = distance
                     self.collision_vel = curr_vel
                     self.collision_time = curr_time
@@ -73,7 +82,13 @@ class Event:
                                              end_time,
                                              self.collision_dist)
                     return collisionNew
-
+                else:
+                    print("redundant")
+            else:
+                print("not valid")
+        else:
+            print("none velocity")
+        print("attempted with ", self.wt_num, " ", mins(self.start_time), self.duration)
 
 # self.collision_vel = float(self.collision_vel) if not self.wrong_dists \
 #     else float(self.collision_vel) / 10

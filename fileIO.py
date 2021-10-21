@@ -9,7 +9,8 @@ import glob
 
 #base_old = "/Users/katharinebowers/Desktop/Levin Lab/ethovision pipeline coding/"
 base = "/Users/katharinebowers/Desktop/fall21 tadpole track exports/"
-data_filepath = os.path.join(base, "Ethovision Track Data Exports/May 2021 Pebble Control Tracks")
+data_filepath = os.path.join(base, "Ethovision Track Data Exports/experimental september 2021 - cut tail")
+# May 2021 Pebble Control Tracks")
 video_csvs_folder = os.path.join(base, "CSVs for each video/")
 
 # old data file list from first making this - before distances, tadpole #, and def subj # were standard
@@ -36,6 +37,6 @@ datfiles = {
 
 excel_files = glob.glob(os.path.join(data_filepath, "*.xlsx"))  # for each video excel sheet
 for vid in excel_files:
-	datfiles[vid] = (1, False, 30)  # each of these new videos has 30 wt and the def is subj#1 and distances are right
+	datfiles[vid] = (1, False, 31)  # each of these new videos has 30 wt and the def is subj#1 and distances are right
 
 # datfiles should now be loaded

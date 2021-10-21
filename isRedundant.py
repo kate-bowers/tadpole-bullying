@@ -24,11 +24,13 @@ def is_redundant(collisions_so_far, curr_coll, wrong_distances):
             # print("maybeing, ", identity, " and ", other_id, " ", distance)
 
             if distance <= 3:  # within 3mm idk lol
-                # print("redundant too close, ", distance, mins(time), mins(other_time), identity, other_id)
+                print("redundant too close, ", distance, mins(time), mins(other_time), identity, other_id)
+                print(distance, " too close ")
                 return True
 
             if identity == other_id:
-                # print("redundant with self", mins(time), mins(other_time), identity, other_id)
+                # print("redundant with self", mins(time), mins(other_time), identity, other_id)]
+                print(" self ,", distance)
                 return True
 
             # else:

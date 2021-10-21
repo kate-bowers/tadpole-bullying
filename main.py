@@ -35,6 +35,7 @@ for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each
 		exceltabToCSV.excelToCSV(file, output_path)
 	else:
 		print("CSVs already exist")
+
 	#breakpoint()
 
 	# Find collisions for this video
@@ -45,6 +46,7 @@ for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each
 	if (min_def_time is None) or (collision_output[1] < min_def_time):
 		min_def_time = collision_output[1]
 	print("yoinks")  # just look at first vid
+	break  # only one video
 
 # Make plots for each video
 for video in collision_masterlist:
@@ -53,7 +55,7 @@ for video in collision_masterlist:
 	for coll in video:
 		coll.printSelf()  # mins(coll[8]), coll)
 	print(len(video))
-	#break  # just look at first vid
+	break  # just look at first vid
 
 
 # Make plots for all videos combined
