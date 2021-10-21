@@ -97,7 +97,15 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
 
                     # Create and add new event
                     currEvent = Event(curr_time, distance, wrow[8], dxy, wxy, def_num, wt_num)
-                    currEvent.collision_window_open = True if distance <= NECESSARY_DISTANCE else False
+                    # currEvent.collision_window_open = True if distance <= NECESSARY_DISTANCE else False
+                    if distance <= NECESSARY_DISTANCE:
+                        if wrow[8] != '-':
+                            currEvent.collision_window_open = True if float(wrow[8]) < 30 else False
+                        else:
+                            currEvent.collision_window_open = True
+                    else:
+                        currEvent.collision_window_open = False
+
                     # if distance is within the necessary window for a valid collision,
                     # then allow looking for collisions
                     WTevents.append(currEvent)
@@ -118,8 +126,16 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                             WTevents[-1] = currEvent
                             #print("collision has been ID'd and saved now")
                     
-                    currEvent.collision_window_open = True if distance <= NECESSARY_DISTANCE and \
-                                                            not currEvent.collision_found else False
+                    # currEvent.collision_window_open = True if distance <= NECESSARY_DISTANCE and \
+                    #                                         not currEvent.collision_found else False
+                    if distance <= NECESSARY_DISTANCE and not currEvent.collision_found:
+                        if wrow[8] != '-':
+                            currEvent.collision_window_open = True if float(wrow[8]) < 30 else False
+                        else:
+                            currEvent.collision_window_open = True
+                    else:
+                        currEvent.collision_window_open = False
+
                     currEvent.updateSelf(distance, curr_time, wrow[8], dxy, wxy)
                     WTevents[-1] = currEvent  # update complete list
 

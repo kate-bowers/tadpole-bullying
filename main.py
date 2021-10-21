@@ -52,6 +52,7 @@ for video in collision_masterlist:
 	print(" video ")
 	for coll in video:
 		coll.printSelf()  # mins(coll[8]), coll)
+	print(len(video))
 	#break  # just look at first vid
 
 
