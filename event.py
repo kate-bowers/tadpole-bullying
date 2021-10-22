@@ -37,7 +37,7 @@ class Event:
             else:
                 print("failed second in val, ", self.collision_vel, " ", self.collision_dist)
         else:
-            print("failed first in val")
+            print("failed first in val, ", self.collision_duration, self.collision_vel)
         return False
 
     # updateSelf always updates the event duration, and the collision details if needed
@@ -57,7 +57,7 @@ class Event:
         print("update coll time called")
         if TOO_CLOSE < distance < self.collision_dist:
 
-            if abs(distance - self.collision_dist) >= 0.5 or (
+            if abs(distance - self.collision_dist) >= 0.3 or (
                     self.collision_vel == '-' and curr_vel != '-'):
                 # TODO absolutely arbitrary guess here
                 # TODO and the difference between last timepoint is significant?
