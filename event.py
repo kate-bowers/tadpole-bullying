@@ -45,22 +45,32 @@ class Event:
         self.duration += 1
         self.collision_duration += 1
         # self.collision_window_open and
+        print("in update, window: ", self.collision_window_open, " coll found: ", self.collision_found,
+                " self.coll time: ", self.collision_time, " curr time: ", curr_time)
         if self.collision_window_open and \
-                not self.collision_found and \
-                curr_time < self.collision_time + 2:  # less than 2s since last updated coll time
-            if TOO_CLOSE < distance < self.collision_dist:
-                if abs(distance - self.collision_dist) >= 0.5  or (
-                        self.collision_vel == '-' and curr_vel != '-'):
-                    # TODO absolutely arbitrary guess here
-                    # TODO and the difference between last timepoint is significant?
-                    # TODO added option to update distance if last vel was null
-                    self.collision_dist = distance
-                    self.collision_vel = curr_vel
-                    self.collision_time = curr_time
-                    self.collision_dxy = curr_dxy
-                    self.collision_wxy = curr_wxy
-                    self.collision_duration = 1
-                    #print("updated distance to ", self.collision_dist, " at ", curr_time)
+                not self.collision_found and curr_time < self.collision_time + 2:  # less than 2s since last updated coll time
+            print("time 2 update")
+            self.updateCollisionTime(distance, curr_time, curr_vel, curr_dxy, curr_wxy)
+
+
+    def updateCollisionTime(self, distance, curr_time, curr_vel, curr_dxy, curr_wxy):
+        print("update coll time called")
+        if TOO_CLOSE < distance < self.collision_dist:
+
+            if abs(distance - self.collision_dist) >= 0.5 or (
+                    self.collision_vel == '-' and curr_vel != '-'):
+                # TODO absolutely arbitrary guess here
+                # TODO and the difference between last timepoint is significant?
+                # TODO added option to update distance if last vel was null
+                self.collision_dist = distance
+                self.collision_vel = curr_vel
+                self.collision_time = curr_time
+                self.collision_dxy = curr_dxy
+                self.collision_wxy = curr_wxy
+                self.collision_duration = 1
+                print("updated distance to ", self.collision_dist, " at ", curr_time)
+            else:
+                print(" no update, ", distance, self.collision_dist, self.collision_vel)
 
     # determine if this event's collision is all set to record
     def tryAddCollision(self, wrong_distances, all_collisions, dxy, clean, end_time):
@@ -81,6 +91,8 @@ class Event:
                                              self.collision_duration, self.duration,
                                              end_time,
                                              self.collision_dist)
+                    print("COLLISIONNNNNNN ADDED")
+                    collisionNew.printSelf()
                     return collisionNew
                 else:
                     print("redundant")
