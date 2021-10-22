@@ -34,10 +34,10 @@ class Event:
             if (self.collision_vel < 150) and \
                     (TOO_CLOSE < (self.collision_dist) < NECESSARY_DISTANCE):
                 return True
-            else:
-                print("failed second in val, ", self.collision_vel, " ", self.collision_dist)
-        else:
-            print("failed first in val, ", self.collision_duration, self.collision_vel)
+            #else:
+                #print("failed second in val, ", self.collision_vel, " ", self.collision_dist)
+        #else:
+            #print("failed first in val, ", self.collision_duration, self.collision_vel)
         return False
 
     # updateSelf always updates the event duration, and the collision details if needed
@@ -45,19 +45,19 @@ class Event:
         self.duration += 1
         self.collision_duration += 1
         # self.collision_window_open and
-        print("in update, window: ", self.collision_window_open, " coll found: ", self.collision_found,
-                " self.coll time: ", self.collision_time, " curr time: ", curr_time)
+        #print("in update, window: ", self.collision_window_open, " coll found: ", self.collision_found,
+        #        " self.coll time: ", self.collision_time, " curr time: ", curr_time)
         if self.collision_window_open and \
                 not self.collision_found and curr_time < self.collision_time + 2:  # less than 2s since last updated coll time
-            print("time 2 update")
+            #print("time 2 update")
             self.updateCollisionTime(distance, curr_time, curr_vel, curr_dxy, curr_wxy)
 
 
     def updateCollisionTime(self, distance, curr_time, curr_vel, curr_dxy, curr_wxy):
-        print("update coll time called")
+        #print("update coll time called")
         if TOO_CLOSE < distance < self.collision_dist:
 
-            if abs(distance - self.collision_dist) >= 0.3 or (
+            if abs(distance - self.collision_dist) >= 0.2 or (
                     self.collision_vel == '-' and curr_vel != '-'):
                 # TODO absolutely arbitrary guess here
                 # TODO and the difference between last timepoint is significant?
@@ -68,9 +68,9 @@ class Event:
                 self.collision_dxy = curr_dxy
                 self.collision_wxy = curr_wxy
                 self.collision_duration = 1
-                print("updated distance to ", self.collision_dist, " at ", curr_time)
-            else:
-                print(" no update, ", distance, self.collision_dist, self.collision_vel)
+                #print("updated distance to ", self.collision_dist, " at ", curr_time)
+            #else:
+                #print(" no update, ", distance, self.collision_dist, self.collision_vel)
 
     # determine if this event's collision is all set to record
     def tryAddCollision(self, wrong_distances, all_collisions, dxy, clean, end_time):
@@ -92,15 +92,15 @@ class Event:
                                              end_time,
                                              self.collision_dist)
                     print("COLLISIONNNNNNN ADDED")
-                    collisionNew.printSelf()
+                    #collisionNew.printSelf()
                     return collisionNew
-                else:
-                    print("redundant")
-            else:
-                print("not valid")
-        else:
-            print("none velocity")
-        print("attempted with ", self.wt_num, " ", mins(self.start_time), self.duration)
+                #else:
+                    #print("redundant")
+            #else:
+                #print("not valid")
+        #else:
+            #print("none velocity")
+        #print("attempted with ", self.wt_num, " ", mins(self.start_time), self.duration)
 
 # self.collision_vel = float(self.collision_vel) if not self.wrong_dists \
 #     else float(self.collision_vel) / 10

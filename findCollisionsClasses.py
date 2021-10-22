@@ -78,7 +78,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
 
             # Now we look for collisions
             if distance <= PROXIMITY_DISTANCE:  # within significant proximity to deformed
-                print(mins(curr_time), " in proximity, ", distance)
+                #print(mins(curr_time), " in proximity, ", distance)
                 if (not already_in_proximity) and (distance > TOO_CLOSE):  # new proximity event to follow
                     print(mins(curr_time), distance, "new event")
 
@@ -117,7 +117,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                     # print(mins(curr_time), distance, "continuing")
                     # if leaving the necessary collision distance right now,
                     # check if there was a legit collision in this window (if we havent found it yet)
-                    print(currEvent.collision_found, currEvent.collision_window_open, distance)
+                    #print(currEvent.collision_found, currEvent.collision_window_open, distance)
                     # TODO i just changed from > to < below THEN made 2 diff
                     # if currEvent.collision_window_open and distance <= NECESSARY_DISTANCE \
                     #         and not currEvent.collision_found:
@@ -125,13 +125,13 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                             and not currEvent.collision_found:
                         # print("updating coll if needed")
                         # currEvent.updateCollisionTime(distance, curr_time, wrow[8], dxy, wxy)
-                        print("trying collision when leaving nec", mins(curr_time))
+                        #print("trying collision when leaving nec", mins(curr_time))
                         collisionNew = currEvent.tryAddCollision(wrong_distances, all_collisions, dxy, False, curr_time)
                         # TODO does this negate "clean" collisions?
                         if collisionNew is not None:  # valid collision found in the past window
                             currEvent.collision_found = True
                             currEvent.collision_window_open = False
-                            print("found and recorded collision")
+                            #print("found and recorded collision")
                             WTevents[-1] = currEvent
                             #print("collision has been ID'd and saved now")
                     
@@ -146,13 +146,13 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
                         currEvent.collision_window_open = False
 
                     currEvent.updateSelf(distance, curr_time, wrow[8], dxy, wxy)
-                    print("updated event")
+                    #print("updated event")
                     WTevents[-1] = currEvent  # update complete list
 
             else:  # not in proximity, event should e ending/over
                 # print("not in proximity")
                 if already_in_proximity:  # end of proximity event, should record now # TODO wait for two timepoints after leaving?
-                    print("trying a coll, ", curr_time)
+                    #print("trying a coll, ", curr_time)
                     collisionNew = currEvent.tryAddCollision(wrong_distances, all_collisions, dxy, True, curr_time)
                     if collisionNew is not None:
                         all_collisions.append(collisionNew)
