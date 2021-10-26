@@ -9,7 +9,8 @@ import glob
 
 #base_old = "/Users/katharinebowers/Desktop/Levin Lab/ethovision pipeline coding/"
 base = "/Users/katharinebowers/Desktop/fall21 tadpole track exports/"
-data_filepath = os.path.join(base, "Ethovision Track Data Exports/experimental september 2021 - cut tail")
+data_filepath = os.path.join(base, "Ethovision Track Data Exports/May 2021 Pebble Control Tracks")
+# experimental september 2021 - cut tail")
 # May 2021 Pebble Control Tracks")
 video_csvs_folder = os.path.join(base, "CSVs for each video/")
 

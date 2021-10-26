@@ -44,6 +44,10 @@ def find_collisions_per_video(datfile, csvs_path):
 
     #  do the plot here TODO ayy
     cmap = plt.cm.get_cmap("hsv", len(all_steps))
+
+
+    print(cmap(1/len(all_steps), bytes=True))
+    print(cmap(2/len(all_steps), bytes=True))
     print("made cmap")
     fig, (axoutlier, axmost) = plt.subplots(2, 1, sharex=True, gridspec_kw={'height_ratios':[6,12]})
     fig.subplots_adjust(hspace=0.05)
@@ -92,10 +96,10 @@ def find_collisions_per_video(datfile, csvs_path):
 
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
-    axoutlier.set_title("Collision duration and velocity over time \n"
-              "in 15:45 min. video" )
+    axoutlier.set_title("Collision duration and velocity over time AGAIN\n"
+              "in control video" )
     plt.show()
-
+    # breakpoint()
     print("made show")
     #
     # ##### TODO this is where i did the zoom in plot
