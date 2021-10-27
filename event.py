@@ -34,10 +34,10 @@ class Event:
             if (self.collision_vel < 150) and \
                     (TOO_CLOSE < (self.collision_dist) < NECESSARY_DISTANCE):
                 return True
-            #else:
-                #print("failed second in val, ", self.collision_vel, " ", self.collision_dist)
-        #else:
-            #print("failed first in val, ", self.collision_duration, self.collision_vel)
+            # else:
+                # print("failed second in val, ", self.collision_vel, " ", self.collision_dist)
+        # else:
+            # print("failed first in val, ", self.collision_duration, self.collision_vel)
         return False
 
     # updateSelf always updates the event duration, and the collision details if needed
@@ -91,16 +91,16 @@ class Event:
                                              self.collision_duration, self.duration,
                                              end_time,
                                              self.collision_dist)
-                    print("COLLISIONNNNNNN ADDED")
+                    # print("COLLISIONNNNNNN ADDED")
                     #collisionNew.printSelf()
                     return collisionNew
-                #else:
-                    #print("redundant")
-            #else:
-                #print("not valid")
-        #else:
-            #print("none velocity")
-        #print("attempted with ", self.wt_num, " ", mins(self.start_time), self.duration)
+                # else:
+                    # print("redundant")
+            # else:
+                # print("not valid")
+        # else:
+            # print("none velocity")
+        # print("attempted with ", self.wt_num, " ", mins(self.start_time), self.duration)
 
 # self.collision_vel = float(self.collision_vel) if not self.wrong_dists \
 #     else float(self.collision_vel) / 10

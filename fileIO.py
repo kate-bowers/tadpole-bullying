@@ -9,9 +9,11 @@ import glob
 
 #base_old = "/Users/katharinebowers/Desktop/Levin Lab/ethovision pipeline coding/"
 base = "/Users/katharinebowers/Desktop/fall21 tadpole track exports/"
-data_filepath = os.path.join(base, "Ethovision Track Data Exports/May 2021 Pebble Control Tracks")
-# experimental september 2021 - cut tail")
-# May 2021 Pebble Control Tracks")
+exp_p = "experimental september 2021 - cut tail"
+cont_p = "May 2021 Pebble Control Tracks"
+curr_p = exp_p
+data_filepath = os.path.join(base, "Ethovision Track Data Exports/"+curr_p)
+
 video_csvs_folder = os.path.join(base, "CSVs for each video/")
 
 # old data file list from first making this - before distances, tadpole #, and def subj # were standard

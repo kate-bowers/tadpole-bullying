@@ -25,6 +25,8 @@ def find_collisions_per_video(datfile, csvs_path):
     def_start_time = find_def_start_time(def_num, csvs_path)
     time_with_def = None
 
+    timer = 45500  # TODO this is just the limit in steps for testing (ie first 15 min = 28500 slots)
+
     for subject in range(1, num_tads + 1):  # calculate for all
         if subject == def_num:  # skip deformed lol
             continue
@@ -33,14 +35,15 @@ def find_collisions_per_video(datfile, csvs_path):
         # this is where I would add the plot stuff
         subj_collisions = result[2]
         timeline = result[3]
-        timer = 28500 # TODO this is just the limit in steps for testing (ie first 15 min = 28500 slots)
         print("making steps for ", subject)
-        subj_steps = makeSteps(subj_collisions, list(timeline))   # [:timer + 1])) removing timer for now
+        subj_steps = makeSteps(subj_collisions, list(timeline))[:timer + 1]  # [:timer + 1])) 25 minute timer
         all_steps.append(list(subj_steps))
 
 
         all_collisions = list(result[0]) # because all colliisons is reset every time
         time_with_def = result[1]  # this is a stupid way to find this
+
+    total_collisions = len(all_collisions)
 
     #  do the plot here TODO ayy
     cmap = plt.cm.get_cmap("hsv", len(all_steps))
@@ -49,17 +52,17 @@ def find_collisions_per_video(datfile, csvs_path):
     print(cmap(1/len(all_steps), bytes=True))
     print(cmap(2/len(all_steps), bytes=True))
     print("made cmap")
-    fig, (axoutlier, axmost) = plt.subplots(2, 1, sharex=True, gridspec_kw={'height_ratios':[6,12]})
+    fig, (axoutlier, axmost) = plt.subplots(2, 1, sharex='all', gridspec_kw={'height_ratios':[6,12]})
     fig.subplots_adjust(hspace=0.05)
 
-    print("made fig ax")
+    #print("made fig ax")
 
     #plt.xticks(timeline)
     #print("made xticks")
 
     for i in np.arange(0, len(all_steps)):
-        axmost.step(timeline, all_steps[i], c=cmap(i), where='post')
-        axoutlier.step(timeline, all_steps[i], c=cmap(i), where='post')
+        axmost.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
+        axoutlier.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
         #break
         #scatter(X, Y, c=cmap(i))
 
@@ -96,54 +99,123 @@ def find_collisions_per_video(datfile, csvs_path):
 
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
-    axoutlier.set_title("Collision duration and velocity over time AGAIN\n"
-              "in control video" )
+    this_title = "Collision duration and velocity over time \n" \
+                 "in experimental video: "+str(total_collisions)+" collisions"
+    axoutlier.set_title(this_title)
     plt.show()
     # breakpoint()
     print("made show")
     #
     # ##### TODO this is where i did the zoom in plot
-    # cmap = plt.cm.get_cmap("hsv", len(all_steps))
-    # print("made cmap")
-    # axmost = plt.subplots(figsize=(8,4.8))
-    # #fig.subplots_adjust(hspace=0.05)
-    #
-    # print("made fig ax")
-    #
-    # # plt.xticks(timeline)
-    # # print("made xticks")
-    #
-    # for i in np.arange(0, len(all_steps)):
-    #     plt.step(timeline, all_steps[i], c=cmap(i), where='post')
-    #     #axoutlier.step(timeline, all_steps[i], c=cmap(i), where='post')
-    #     # break
-    #     # scatter(X, Y, c=cmap(i))
-    #
-    # plt.ylim(0, 12.5)
-    # #axoutlier.set_yticks([25, 50, 75, 100, 125, 150, 175])
-    # plt.xlim(250, 400)
-    # #axoutlier.set_ylim(12.5, 140)
-    # #axoutlier.set_xlim(250, 400)
-    #
-    #
-    # # plt.show()
-    # #
-    # # d = .5  # proportion of vertical to horizontal extent of the slanted line
-    # # kwargs = dict(marker=[(-1, -d), (1, d)], markersize=12,
-    # #               linestyle="none", color='k', mec='k', mew=1, clip_on=False)
-    # # axoutlier.plot([0, 1], [0, 0], transform=axoutlier.transAxes, **kwargs)
-    # # axmost.plot([0, 1], [1, 1], transform=axmost.transAxes, **kwargs)
-    #
-    # plt.xlabel("Time(s)")
-    # plt.ylabel("Collision Velocity (mm/s)")
+    cmap = plt.cm.get_cmap("hsv", len(all_steps))
+    print("made cmap")
+    axmost = plt.subplots(figsize=(8,4.8))
+    #fig.subplots_adjust(hspace=0.05)
+
+    print("made fig ax")
+
+    # plt.xticks(timeline)
+    # print("made xticks")
+
+    for i in np.arange(0, len(all_steps)):
+        plt.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
+        #axoutlier.step(timeline, all_steps[i], c=cmap(i), where='post')
+        # break
+        # scatter(X, Y, c=cmap(i))
+
+    plt.ylim(0, 12.5)
+    #axoutlier.set_yticks([25, 50, 75, 100, 125, 150, 175])
+    plt.xlim(800, 1000)
+    #axoutlier.set_ylim(12.5, 140)
+    #axoutlier.set_xlim(250, 400)
+
+
     # plt.show()
-    # print("made show")
+    #
+    # d = .5  # proportion of vertical to horizontal extent of the slanted line
+    # kwargs = dict(marker=[(-1, -d), (1, d)], markersize=12,
+    #               linestyle="none", color='k', mec='k', mew=1, clip_on=False)
+    # axoutlier.plot([0, 1], [0, 0], transform=axoutlier.transAxes, **kwargs)
+    # axmost.plot([0, 1], [1, 1], transform=axmost.transAxes, **kwargs)
+
+    plt.xlabel("Time(s)")
+    plt.ylabel("Collision Velocity (mm/s)")
+    plt.show()
+    print("made show")
     #
 
+    # NEW
+    cmap = plt.cm.get_cmap("hsv", len(all_steps))
+    print("made cmap")
+    axmost = plt.subplots(figsize=(8, 4.8))
+    # fig.subplots_adjust(hspace=0.05)
+
+    print("made fig ax")
+
+    # plt.xticks(timeline)
+    # print("made xticks")
+
+    for i in np.arange(0, len(all_steps)):
+        plt.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
+        # axoutlier.step(timeline, all_steps[i], c=cmap(i), where='post')
+        # break
+        # scatter(X, Y, c=cmap(i))
+
+    plt.ylim(0, 12.5)
+    # axoutlier.set_yticks([25, 50, 75, 100, 125, 150, 175])
+    plt.xlim(0, 400)
+    # axoutlier.set_ylim(12.5, 140)
+    # axoutlier.set_xlim(250, 400)
+
+    # plt.show()
+    #
+    # d = .5  # proportion of vertical to horizontal extent of the slanted line
+    # kwargs = dict(marker=[(-1, -d), (1, d)], markersize=12,
+    #               linestyle="none", color='k', mec='k', mew=1, clip_on=False)
+    # axoutlier.plot([0, 1], [0, 0], transform=axoutlier.transAxes, **kwargs)
+    # axmost.plot([0, 1], [1, 1], transform=axmost.transAxes, **kwargs)
+
+    plt.xlabel("Time(s)")
+    plt.ylabel("Collision Velocity (mm/s)")
+    plt.show()
+
+    # NEW AGAIN
+    cmap = plt.cm.get_cmap("hsv", len(all_steps))
+    print("made cmap")
+    axmost = plt.subplots(figsize=(8, 4.8))
+    # fig.subplots_adjust(hspace=0.05)
+
+    print("made fig ax")
+
+    # plt.xticks(timeline)
+    # print("made xticks")
+
+    for i in np.arange(0, len(all_steps)):
+        plt.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
+        # axoutlier.step(timeline, all_steps[i], c=cmap(i), where='post')
+        # break
+        # scatter(X, Y, c=cmap(i))
+
+    plt.ylim(0, 12.5)
+    # axoutlier.set_yticks([25, 50, 75, 100, 125, 150, 175])
+    plt.xlim(0, 600)
+    # axoutlier.set_ylim(12.5, 140)
+    # axoutlier.set_xlim(250, 400)
+
+    # plt.show()
+    #
+    # d = .5  # proportion of vertical to horizontal extent of the slanted line
+    # kwargs = dict(marker=[(-1, -d), (1, d)], markersize=12,
+    #               linestyle="none", color='k', mec='k', mew=1, clip_on=False)
+    # axoutlier.plot([0, 1], [0, 0], transform=axoutlier.transAxes, **kwargs)
+    # axmost.plot([0, 1], [1, 1], transform=axmost.transAxes, **kwargs)
+
+    plt.xlabel("Time(s)")
+    plt.ylabel("Collision Velocity (mm/s)")
+    plt.show()
 
 
     #####
-    total_collisions = len(all_collisions)
     print(str(total_collisions) + " by " + str(num_tads - 1) + " wt tadpoles")  # + " in " + deformed_csv[14][1])
     print("in " + mins(time_with_def))
     # Flatten into time-based mega list
@@ -167,5 +239,7 @@ def find_collisions_per_video(datfile, csvs_path):
 
     # would call plotting thigns now
 
-    return (all_collisions_flat_bytime, time_with_def)
+    # print(all_steps)
+    print("twas all steps")
+    return (all_collisions_flat_bytime, time_with_def, all_steps, timeline)
 

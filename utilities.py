@@ -9,7 +9,7 @@ import os
 import csv
 
 PROXIMITY_DISTANCE = 5.5 # 5.5 # was 5 for exp
-NECESSARY_DISTANCE = 5 #4.2 # 5 # was 4 for exp
+NECESSARY_DISTANCE = 4.2 # 5 # 4.2 # 5 # was 4 for exp
 TOO_CLOSE = 0.5
 
 

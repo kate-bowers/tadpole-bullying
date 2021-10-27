@@ -15,7 +15,8 @@ from event import Event, Collision
 
 
 def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_collisions):
-    print("starting ", wt_num)
+    # print("starting ", wt_num)
+    timer = 45500
     def_start = float(def_start)
     deformed_csv = os.path.join(csvs_path, f"track-arena_1-subject_{def_num}.csv")
     wt_csv = os.path.join(csvs_path, f"track-arena_1-subject_{wt_num}.csv")
@@ -45,9 +46,9 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
         counter = 0  # temporary for time limiting
         for drow, wrow in zip(def_reader, wt_reader):
             counter += 1
-            # if counter > 28500:  # look at first 15:45 ish (end of my annotated collision list)
+            if counter > timer:  # look at first 15:45 ish (end of my annotated collision list)
                 # in orig results contains 1 ongoing and one graze
-                # break
+                break
 
             if float(drow[0]) < float(def_start):
                 continue  # if the def tadpole isnt here yet, ignore
@@ -80,7 +81,7 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
             if distance <= PROXIMITY_DISTANCE:  # within significant proximity to deformed
                 #print(mins(curr_time), " in proximity, ", distance)
                 if (not already_in_proximity) and (distance > TOO_CLOSE):  # new proximity event to follow
-                    print(mins(curr_time), distance, "new event")
+                    # print(mins(curr_time), distance, "new event")
 
                     # Close any ongoing proximity event, record collision if it is valid
                     if len(WTevents) != 0:
