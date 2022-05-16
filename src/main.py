@@ -9,10 +9,6 @@ import exceltabToCSV
 import glob
 import os
 import collisionsPerVideo as perVideo
-import matplotlib.pyplot as plt
-import numpy as np
-import plotAll
-from utilities import mins
 
 collision_masterlist = []  # every collision in every video
 plot_steps = []
@@ -21,10 +17,10 @@ min_def_time = None
 # 	TODO make constants module and import them
 # TODO should i change from hardcoding row[8] ie for velocity, auto find velocity col # each time?
 # TODO save results to a file output pleaseeeee
-for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx"))[1:2]:  # for each video excel sheet
+for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each video excel sheet
 	# Make output directory for csvs if it doesn't exist yet
 	print(file)
-	subfolder = file[len(fileIO.data_filepath)+1:-5]
+	subfolder = file[len(fileIO.data_filepath) + 1:-5]
 	output_path = os.path.join(fileIO.video_csvs_folder, subfolder + "/")
 
 	print(fileIO.video_csvs_folder)
@@ -51,7 +47,6 @@ for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx"))[1:2]:  # for
 	# Keep track of latest start time for deformed tadpole tracking
 	if (min_def_time is None) or (collision_output[1] < min_def_time):
 		min_def_time = collision_output[1]
-	print("yoinks")  # just look at first vid
 
 
 

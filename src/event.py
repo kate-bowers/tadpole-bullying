@@ -4,7 +4,7 @@
 # Beckman Scholars - Tadpole Bullying
 # event.py -- class declaration for Event class
 
-from utilities import mins, dist, PROXIMITY_DISTANCE, NECESSARY_DISTANCE, TOO_CLOSE
+from src.utilities import mins, dist, NECESSARY_DISTANCE, TOO_CLOSE
 from isRedundant import is_redundant
 
 # TODO i want to get rid of timed_out as a concept but should just implement classes in general first

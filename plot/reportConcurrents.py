@@ -6,7 +6,7 @@
 
 import os
 import math
-from utilities import mins
+from src.utilities import mins
 
 
 def report_concurrents(collisions, wt_num, csvs_path, deftime, num_tads):

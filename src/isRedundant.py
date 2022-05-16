@@ -4,7 +4,7 @@
 # Beckman Scholars - Tadpole Bullying
 # isRedundant.py -- identifies if a given collision is redundant/multiple-ID #TODO this is a bad desc
 
-from utilities import dist, mins
+from src.utilities import dist
 
 
 def is_redundant(collisions_so_far, curr_coll, wrong_distances):

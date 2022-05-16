@@ -6,9 +6,8 @@
 
 import os
 import csv
-from utilities import dist, mins, TOO_CLOSE, NECESSARY_DISTANCE, PROXIMITY_DISTANCE
-from isRedundant import is_redundant
-from event import Event, Collision
+from src.utilities import dist, TOO_CLOSE, NECESSARY_DISTANCE, PROXIMITY_DISTANCE
+from event import Event
 
 
 # branching this is probably best bet

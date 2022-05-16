@@ -9,6 +9,8 @@ import findCollisionsClasses # UPDATED FOR CLASSES BRANCH
 import matplotlib.pyplot as plt
 import numpy as np
 
+# TODO for plots -- show proximity length as well as just collision length? somehow? idk
+
 def find_collisions_per_video(datfile, csvs_path):
     # datfile - wt num, wrong_distances, num of tadpoles
     print(csvs_path)
@@ -102,7 +104,7 @@ def find_collisions_per_video(datfile, csvs_path):
     this_title = "Collision duration and velocity over time \n" \
                  "in experimental video: "+str(total_collisions)+" collisions"
     axoutlier.set_title(this_title)
-    plt.show()
+    #plt.show()
     # breakpoint()
     print("made show")
     #
@@ -140,7 +142,7 @@ def find_collisions_per_video(datfile, csvs_path):
 
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
-    plt.show()
+    # plt.show()
     print("made show")
     #
 
@@ -177,7 +179,7 @@ def find_collisions_per_video(datfile, csvs_path):
 
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
-    plt.show()
+    #plt.show()
 
     # NEW AGAIN
     cmap = plt.cm.get_cmap("hsv", len(all_steps))
@@ -212,7 +214,7 @@ def find_collisions_per_video(datfile, csvs_path):
 
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
-    plt.show()
+    #plt.show()
 
 
     #####
