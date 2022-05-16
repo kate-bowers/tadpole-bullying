@@ -6,7 +6,6 @@
 
 import csv
 import openpyxl as op
-import os
 
 
 def excelToCSV(excel_file, csv_file_base_path):  # adapted from exceltab_to_csv by Github user billydh

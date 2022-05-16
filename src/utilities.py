@@ -7,10 +7,12 @@
 import math
 import os
 import csv
+import fileIO
 
-PROXIMITY_DISTANCE = 5.5 # 5.5 # was 5 for exp
-NECESSARY_DISTANCE = 5 #4.2 # 5 # 4.2 # 5 # was 4 for exp
+PROXIMITY_DISTANCE = float(fileIO.userinput[0]) # 5.5 # 5.5 # was 5 for exp
+NECESSARY_DISTANCE = float(fileIO.userinput[1]) #5 #4.2 # 5 # 4.2 # 5 # was 4 for exp
 TOO_CLOSE = 0.5
+
 
 
 def dist(p1, p2):

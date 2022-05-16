@@ -6,30 +6,37 @@
 
 import os
 import glob
+import tkinter as tk
+from tkinter.filedialog import askdirectory
+root = tk.Tk()
+root.withdraw()
 
-#base_old = "/Users/katharinebowers/Desktop/Levin Lab/ethovision pipeline coding/"
-base = "/Users/katharinebowers/Desktop/fall21 tadpole track exports/"
-exp_p = "experimental september 2021 - cut tail"
-cont_p = "May 2021 Pebble Control Tracks"
-curr_p = cont_p
-data_filepath = os.path.join(base, "Ethovision Track Data Exports/"+curr_p)
+print("Welcome! Select the directory which includes your Ethovision track export Excel files.")
+print("This folder should include only experimental OR only control videos: they have different collision distance thresholds.")
+print("The program assumes that the deformed tadpole is Subject #1, and there are 31 total tadpoles. It is possible to "
+	  "change these settings by editing the source code.")
+print("The output track CSVs and collision lists for each video will also be saved to this folder.")
+print("\n ........................................")
 
-video_csvs_folder = os.path.join(base, "CSVs for each video/")
+data_filepath = askdirectory(title='Select Data Folder')
 
-# old data file list from first making this - before distances, tadpole #, and def subj # were standard
-datfiles_old = {   # specific to current list of info  --
-	# format: filepath corresponds to (deformed tadpole ID number,
-	#                                  True if distances are off by a factor of 10, number of tadpoles
-	(os.path.join(data_filepath, "Raw data-Correction Copy NewVideo1_9_28_18 " +
-		"-666 inj deformed - good - ALL SUBJECTS-Trial    14 (1).xlsx")): (38, True, 38),
-	(os.path.join(data_filepath, "Raw data-Correction Copy NewVideo8_10_5_18_666 " +
-		"inj deformed - good - Copy-Trial     2.xlsx")): (10, False, 38),
-	(os.path.join(data_filepath, "Raw data-Correction Copy NewVideo9_10_5_18_666 " +
-		"inj deformed - good - Copy-Trial     2.xlsx")): (20, False, 36),
-	(os.path.join(data_filepath, "Raw data-RepeatVideo2_10_2_18_-_666_inj_deformed_" +
-		"-_good_---_35_tadpoles-Trial     2.xlsx")): (15, False, 36)
-}
 
+userinput = input("Enter the proximity distance and necessary distance (mm) and experiment type, ie 5.5 4.2 tail-cut   :"
+			  "\nHint: As a good default, use 5.5 as proximity distance,"
+			  " 4.2 for experimental necessary distance, and 5 for control/pebble necessary distance.").split()
+if len(userinput) != 3:
+	while len(userinput) != 3:
+		print("Oops, that's not right. Please input the 3 values as directed.")
+		userinput = input("Enter the proximity distance and necessary distance (mm) and "
+						  "experiment type, ie 5.5 4.2 tail-cut   :").split()
+
+video_csvs_folder = os.path.join(data_filepath, "CSVs for each video/")
+if not os.path.isdir(video_csvs_folder):
+	os.mkdir(video_csvs_folder)
+
+colls_path = os.path.join(data_filepath, "Collisions in each video/")
+if not os.path.isdir(colls_path):
+	os.mkdir(colls_path)
 
 datfiles = {
 	# format: filepath corresponds to (deformed tadpole ID number,

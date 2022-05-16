@@ -12,6 +12,7 @@ from event import Event
 
 def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_collisions):
     print("START OF WT ", wt_num)
+    print(NECESSARY_DISTANCE, PROXIMITY_DISTANCE)
     timer = 45500
     def_start = float(def_start)
     deformed_csv = os.path.join(csvs_path, f"track-arena_1-subject_{def_num}.csv")
@@ -205,6 +206,6 @@ def find_collisions(wt_num, def_num, csvs_path, wrong_distances, def_start, all_
         last_time = curr_time
         # TODO check for last collision?
     time_with_def = last_time - def_start  # i added this new - check if it works right?
-    print("END OF WT ", wt_num, " :: ", len(all_collisions), " total collisions")
+    print("END OF WT ", wt_num, " :: ", len(all_collisions), " collisions so far")
     timeline = [float(i) for i in timeline]
     return all_collisions, time_with_def, this_wt_collisions, timeline

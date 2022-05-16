@@ -9,6 +9,8 @@ import exceltabToCSV
 import glob
 import os
 import collisionsPerVideo as perVideo
+from contextlib import redirect_stdout
+
 
 collision_masterlist = []  # every collision in every video
 plot_steps = []
@@ -17,15 +19,20 @@ min_def_time = None
 # 	TODO make constants module and import them
 # TODO should i change from hardcoding row[8] ie for velocity, auto find velocity col # each time?
 # TODO save results to a file output pleaseeeee
+vidnames = []
 for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each video excel sheet
 	# Make output directory for csvs if it doesn't exist yet
-	print(file)
+	#print(file)
 	subfolder = file[len(fileIO.data_filepath) + 1:-5]
 	output_path = os.path.join(fileIO.video_csvs_folder, subfolder + "/")
 
-	print(fileIO.video_csvs_folder)
-	print(file[len(fileIO.data_filepath):-5] + "/")
-	print(output_path)
+
+	#print(fileIO.video_csvs_folder)
+	#print(file[len(fileIO.data_filepath):-5] + "/")
+	#print(output_path)
+	print(subfolder)
+	vidnames.append(subfolder)
+
 	if not os.path.exists(output_path):
 		os.mkdir(output_path)
 	else:
@@ -41,6 +48,18 @@ for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each
 	# Find collisions for this video
 	collision_output = perVideo.find_collisions_per_video(fileIO.datfiles[file], output_path)
 	collision_masterlist.append(collision_output[0])  # add collisions from this video to masterlist
+	# TODO this doesn't work quite right - trying to get it to save in the same folder as the rest of the stuff
+	writef = "collisions_"+subfolder+".txt"
+	print(writef)
+	writefpath = os.path.join(fileIO.colls_path, writef)
+	with open(writefpath, 'w') as f:
+		with redirect_stdout(f):
+			print("Format:  time of collision, (time of collision, displacement, velocity, clean collision t/f,"
+				  " wt number, wt coordinates, deformed number, event/proximity duration, collision duration, end time, "
+				  "distance between wt and deformed")
+			for coll in collision_output[0]:
+				coll.printSelf()
+			print("Total ", len(collision_output[0]), " collisions")
 	plot_steps.append(collision_output[2])
 	timelines.append(collision_output[3])
 
@@ -49,14 +68,14 @@ for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each
 		min_def_time = collision_output[1]
 
 
-
 # Make plots for each video
+ctr = 0
 for video in collision_masterlist:
 	# plotAll.makePlots(video, min_def_time)
-	print(" video ")
+	print("COLLISIONS IN ", vidnames[ctr])
 	for coll in video:
 		coll.printSelf()  # mins(coll[8]), coll)
-	print(len(video), "collisions")
+	print(len(video), " collisions")
 
 
 # OCT 26 2021

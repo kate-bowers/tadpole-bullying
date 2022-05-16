@@ -8,8 +8,10 @@ from utilities import mins, find_def_start_time, makeSteps
 import findCollisionsClasses # UPDATED FOR CLASSES BRANCH
 import matplotlib.pyplot as plt
 import numpy as np
+import fileIO
 
 # TODO for plots -- show proximity length as well as just collision length? somehow? idk
+
 
 def find_collisions_per_video(datfile, csvs_path):
     # datfile - wt num, wrong_distances, num of tadpoles
@@ -41,26 +43,26 @@ def find_collisions_per_video(datfile, csvs_path):
         subj_steps = makeSteps(subj_collisions, list(timeline))[:timer + 1]  # [:timer + 1])) 25 minute timer
         all_steps.append(list(subj_steps))
 
-
         all_collisions = list(result[0]) # because all colliisons is reset every time
         time_with_def = result[1]  # this is a stupid way to find this
 
     total_collisions = len(all_collisions)
 
-    #  do the plot here
+    ####### PLOTS #######
     cmap = plt.cm.get_cmap("hsv", len(all_steps))
 
     #print(cmap(1/len(all_steps), bytes=True))
     #print(cmap(2/len(all_steps), bytes=True))
     #print("made cmap")
+
+    # Broken axis collision plot
     fig, (axoutlier, axmost) = plt.subplots(2, 1, sharex='all', gridspec_kw={'height_ratios':[6,12]})
     fig.subplots_adjust(hspace=0.05)
 
     for i in np.arange(0, len(all_steps)):
         axmost.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
         axoutlier.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
-        #break
-        #scatter(X, Y, c=cmap(i))
+
 
     axmost.set_ylim(0, 12.5)
     axoutlier.set_yticks([25, 50, 75, 100, 125, 150, 175])
@@ -68,25 +70,8 @@ def find_collisions_per_video(datfile, csvs_path):
     axoutlier.set_ylim(12.5, 140)
     #axoutlier.set_xlim(250, 400)
 
-    # box = axoutlier.get_position()
-    # print(box)
-    # box2 = axmost.get_position()
-    # print(box)
-    # plt.show()
 
-    # axoutlier.spines.bottom.set_visible(False)
-    # axmost.spines.top.set_visible(False)
-    # axoutlier.xaxis.tick_top()
-    #axoutlier.tick_params(labeltop=False)  # don't put tick labels at the top
-    #axmost.xaxis.tick_bottom()
-
-    # Now, let's turn towards the cut-out slanted lines.
-    # We create line objects in axes coordinates, in which (0,0), (0,1),
-    # (1,0), and (1,1) are the four corners of the axes.
-    # The slanted lines themselves are markers at those locations, such that the
-    # lines keep their angle and position, independent of the axes size or scale
-    # Finally, we need to disable clipping.
-
+    # setting slanted lines for broken axis plots
     d = .5  # proportion of vertical to horizontal extent of the slanted line
     kwargs = dict(marker=[(-1, -d), (1, d)], markersize=12,
                   linestyle="none", color='k', mec='k', mew=1, clip_on=False)
@@ -96,13 +81,12 @@ def find_collisions_per_video(datfile, csvs_path):
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
     this_title = "Collision duration and velocity over time \n" \
-                 "in experimental video: "+str(total_collisions)+" collisions"
+                 "in " + fileIO.userinput[2] + " video: "+str(total_collisions)+" collisions"
     axoutlier.set_title(this_title)
     plt.show()
-    # breakpoint()
-    #print("made show")
-    #
-    # ##### TODO this is where i did the zoom in plot
+
+    # Zoomed in plot
+    '''
     print("zoomed in plot ")
     cmap = plt.cm.get_cmap("hsv", len(all_steps))
     #print("made cmap")
@@ -117,8 +101,6 @@ def find_collisions_per_video(datfile, csvs_path):
     for i in np.arange(0, len(all_steps)):
         plt.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
         #axoutlier.step(timeline, all_steps[i], c=cmap(i), where='post')
-        # break
-        # scatter(X, Y, c=cmap(i))
 
     plt.ylim(0, 12.5)
     #axoutlier.set_yticks([25, 50, 75, 100, 125, 150, 175])
@@ -138,16 +120,14 @@ def find_collisions_per_video(datfile, csvs_path):
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
     # plt.show()
-    print("made show")
     #
+    '''
 
-    # NEW
+    # another zoomed in plot
+    '''
     cmap = plt.cm.get_cmap("hsv", len(all_steps))
-    print("made cmap")
     axmost = plt.subplots(figsize=(8, 4.8))
     # fig.subplots_adjust(hspace=0.05)
-
-    print("made fig ax")
 
     # plt.xticks(timeline)
     # print("made xticks")
@@ -175,8 +155,10 @@ def find_collisions_per_video(datfile, csvs_path):
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
     #plt.show()
+    '''
 
-    # NEW AGAIN
+    # Another kind of zoomed in plot
+    '''
     cmap = plt.cm.get_cmap("hsv", len(all_steps))
     print("made cmap")
     axmost = plt.subplots(figsize=(8, 4.8))
@@ -210,11 +192,11 @@ def find_collisions_per_video(datfile, csvs_path):
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
     plt.show()
-
+    '''
 
     #####
     print(str(total_collisions) + " by " + str(num_tads - 1) + " wt tadpoles")  # + " in " + deformed_csv[14][1])
-    print("in " + mins(time_with_def))
+    print("in " + mins(time_with_def) + " minutes")
     # Flatten into time-based mega list
     # print(all_collisions)
     # all_collisions_flat_bytime = sum(all_collisions, []) # flattens from subjects to full video
@@ -237,6 +219,6 @@ def find_collisions_per_video(datfile, csvs_path):
     # would call plotting thigns now
 
     # print(all_steps)
-    print("twas all steps")
+    print("all steps graphs done")
     return (all_collisions_flat_bytime, time_with_def, all_steps, timeline)
 
