@@ -40,7 +40,7 @@ def find_collisions_per_video(datfile, csvs_path):
         subj_collisions = result[2]
         timeline = result[3]
         print("calculating plot steps for ", subject)
-        subj_steps = makeSteps(subj_collisions, list(timeline))[:timer + 1]  # [:timer + 1])) 25 minute timer
+        subj_steps = makeSteps(subj_collisions, list(timeline))  # [:timer + 1])) 25 minute timer
         all_steps.append(list(subj_steps))
 
         all_collisions = list(result[0]) # because all colliisons is reset every time
@@ -60,8 +60,10 @@ def find_collisions_per_video(datfile, csvs_path):
     fig.subplots_adjust(hspace=0.05)
 
     for i in np.arange(0, len(all_steps)):
-        axmost.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
-        axoutlier.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
+        #axmost.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
+        #axoutlier.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
+        axmost.step(timeline, all_steps[i], c=cmap(i), where='post')
+        axoutlier.step(timeline, all_steps[i], c=cmap(i), where='post')
 
 
     axmost.set_ylim(0, 12.5)
