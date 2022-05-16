@@ -56,8 +56,8 @@ for video in collision_masterlist:
 	print(" video ")
 	for coll in video:
 		coll.printSelf()  # mins(coll[8]), coll)
-	print(len(video))
-	# just look at first vid
+	print(len(video), "collisions")
+
 
 # OCT 26 2021
 # making plot showing min and max of control video
@@ -105,13 +105,3 @@ plt.show()
 # breakpoint()
 print("made show")
 '''
-
-
-# Make plots for all videos combined
-# collision_masterlist_flat_bytime = sum(collision_masterlist, []) # flattens from each video to all
-# collision_masterlist_flat_bytime.sort(key=lambda x : x[0])
-# print(collision_masterlist_flat_bytime)
-# plotAll.makePlots(collision_masterlist_flat_bytime, min_def_time)
-# # TODO LABEL THESE GRAPHS LOL THEYRE USELESS RN
-# # Make summary bar plots
-# import summaryBars

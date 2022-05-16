@@ -2,9 +2,9 @@
 # Levin Lab Tufts University
 # Program development started March 2021
 # Beckman Scholars - Tadpole Bullying
-# isRedundant.py -- identifies if a given collision is redundant/multiple-ID #TODO this is a bad desc
+# isRedundant.py -- identifies if a given collision is redundant/multiple-ID
 
-from src.utilities import dist
+from utilities import dist
 
 
 def is_redundant(collisions_so_far, curr_coll, wrong_distances):

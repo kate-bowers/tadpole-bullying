@@ -10,8 +10,8 @@ import os
 
 
 def excelToCSV(excel_file, csv_file_base_path):  # adapted from exceltab_to_csv by Github user billydh
-    print("starting now")
-    print("exc file is " + excel_file)
+    print("starting excel processing now")
+    print("excel file is " + excel_file)
     print("path is " + csv_file_base_path)
 
     workbook = op.load_workbook(filename=excel_file, read_only=True)

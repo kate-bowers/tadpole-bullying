@@ -4,7 +4,7 @@
 # Beckman Scholars - Tadpole Bullying
 # event.py -- class declaration for Event class
 
-from src.utilities import mins, dist, NECESSARY_DISTANCE, TOO_CLOSE
+from utilities import mins, dist, NECESSARY_DISTANCE, TOO_CLOSE
 from isRedundant import is_redundant
 
 # TODO i want to get rid of timed_out as a concept but should just implement classes in general first
@@ -61,7 +61,7 @@ class Event:
                     self.collision_vel == '-' and curr_vel != '-'):
                 # TODO absolutely arbitrary guess here
                 # TODO and the difference between last timepoint is significant?
-                # TODO added option to update distance if last vel was null
+                # TODO added option to update distance if last velocity was null
                 self.collision_dist = distance
                 self.collision_vel = curr_vel
                 self.collision_time = curr_time

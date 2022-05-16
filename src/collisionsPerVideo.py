@@ -37,7 +37,7 @@ def find_collisions_per_video(datfile, csvs_path):
         # this is where I would add the plot stuff
         subj_collisions = result[2]
         timeline = result[3]
-        print("making steps for ", subject)
+        print("calculating plot steps for ", subject)
         subj_steps = makeSteps(subj_collisions, list(timeline))[:timer + 1]  # [:timer + 1])) 25 minute timer
         all_steps.append(list(subj_steps))
 
@@ -47,20 +47,14 @@ def find_collisions_per_video(datfile, csvs_path):
 
     total_collisions = len(all_collisions)
 
-    #  do the plot here TODO ayy
+    #  do the plot here
     cmap = plt.cm.get_cmap("hsv", len(all_steps))
 
-
-    print(cmap(1/len(all_steps), bytes=True))
-    print(cmap(2/len(all_steps), bytes=True))
-    print("made cmap")
+    #print(cmap(1/len(all_steps), bytes=True))
+    #print(cmap(2/len(all_steps), bytes=True))
+    #print("made cmap")
     fig, (axoutlier, axmost) = plt.subplots(2, 1, sharex='all', gridspec_kw={'height_ratios':[6,12]})
     fig.subplots_adjust(hspace=0.05)
-
-    #print("made fig ax")
-
-    #plt.xticks(timeline)
-    #print("made xticks")
 
     for i in np.arange(0, len(all_steps)):
         axmost.step(timeline[:timer + 1], all_steps[i], c=cmap(i), where='post')
@@ -104,17 +98,18 @@ def find_collisions_per_video(datfile, csvs_path):
     this_title = "Collision duration and velocity over time \n" \
                  "in experimental video: "+str(total_collisions)+" collisions"
     axoutlier.set_title(this_title)
-    #plt.show()
+    plt.show()
     # breakpoint()
-    print("made show")
+    #print("made show")
     #
     # ##### TODO this is where i did the zoom in plot
+    print("zoomed in plot ")
     cmap = plt.cm.get_cmap("hsv", len(all_steps))
-    print("made cmap")
+    #print("made cmap")
     axmost = plt.subplots(figsize=(8,4.8))
     #fig.subplots_adjust(hspace=0.05)
 
-    print("made fig ax")
+    #print("made fig ax")
 
     # plt.xticks(timeline)
     # print("made xticks")
@@ -214,7 +209,7 @@ def find_collisions_per_video(datfile, csvs_path):
 
     plt.xlabel("Time(s)")
     plt.ylabel("Collision Velocity (mm/s)")
-    #plt.show()
+    plt.show()
 
 
     #####
