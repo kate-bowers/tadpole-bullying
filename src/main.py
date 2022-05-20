@@ -16,9 +16,7 @@ collision_masterlist = []  # every collision in every video
 plot_steps = []
 timelines = []
 min_def_time = None
-# 	TODO make constants module and import them
 # TODO should i change from hardcoding row[8] ie for velocity, auto find velocity col # each time?
-# TODO save results to a file output pleaseeeee
 vidnames = []
 for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each video excel sheet
 	# Make output directory for csvs if it doesn't exist yet
@@ -54,7 +52,7 @@ for file in glob.glob(os.path.join(fileIO.data_filepath, "*.xlsx")):  # for each
 	writefpath = os.path.join(fileIO.colls_path, writef)
 	with open(writefpath, 'w') as f:
 		with redirect_stdout(f):
-			print("Format:  time of collision, (time of collision, displacement, velocity, clean collision t/f,"
+			print("Format:  time of collision, (time of collision in seconds, displacement, velocity, clean collision t/f,"
 				  " wt number, wt coordinates, deformed number, event/proximity duration, collision duration, end time, "
 				  "distance between wt and deformed")
 			for coll in collision_output[0]:
