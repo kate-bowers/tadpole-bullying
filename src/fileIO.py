@@ -11,24 +11,24 @@ from tkinter.filedialog import askdirectory
 root = tk.Tk()
 root.withdraw()
 
-print("Welcome! Select the directory which includes your Ethovision track export Excel files.")
-print("This folder should include only experimental OR only control videos: they have different collision distance thresholds.")
+print("Welcome! Select the directory which includes your Ethovision track export Excel files. ")
+print("This folder should include only experimental OR only control videos: they have different collision distance thresholds. ")
 print("The program assumes that the deformed tadpole is Subject #1, and there are 31 total tadpoles. It is possible to "
-	  "change these settings by editing the source code.")
-print("The output track CSVs and collision lists for each video will also be saved to this folder.")
+	  "change these settings by editing the source code. ")
+print("The output track CSVs and collision lists for each video will also be saved to this folder. ")
 print("\n ........................................")
 
 data_filepath = askdirectory(title='Select Data Folder')
 
 
-userinput = input("Enter the proximity distance and necessary distance (mm) and experiment type, ie 5.5 4.2 tail-cut   :"
+userinput = input("Enter the proximity distance and necessary distance (mm) and experiment type, ie 5.5 4.2 tail-cut   : "
 			  "\nHint: As a good default, use 5.5 as proximity distance,"
-			  " 4.2 for experimental necessary distance, and 5 for control/pebble necessary distance.").split()
+			  " 4.2 for experimental necessary distance, and 5 for control/pebble necessary distance. ").split()
 if len(userinput) != 3:
 	while len(userinput) != 3:
-		print("Oops, that's not right. Please input the 3 values as directed.")
+		print("Oops, that's not right. Please input the 3 values as directed. ")
 		userinput = input("Enter the proximity distance and necessary distance (mm) and "
-						  "experiment type, ie 5.5 4.2 tail-cut   :").split()
+						  "experiment type, ie 5.5 4.2 tail-cut   : ").split()
 
 video_csvs_folder = os.path.join(data_filepath, "CSVs for each video/")
 if not os.path.isdir(video_csvs_folder):
