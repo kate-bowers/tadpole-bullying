@@ -15,6 +15,8 @@ When prompted for a data folder, choose your folder of Ethovision track output E
 
 I recommend 5.5 (mm) as a proximity distance for all experiments, 4.2 as a necessary distance for experimental videos, and 5 as a necessary distance for control videos.
 
+The program will make changes to the data folder provided: 1) a CSVs folder with subfolders for each video containing CSV files of tracks for all subjects, and 2) a collisions output folder which contains a text file listing all collisions occurring in the video. It lists all collisions with rich information including their velocity, displacement, tadpole IDs, etc.  
+
 # Plots
 I have made many plots for this project with Python over the years. I included all of those files in the /plot/ directory, though they are not called by the program. Feel free to browse and reuse code. The data for those is typically hard coded in. Also, there are many commented-out parts of the sourcecode that encode more plots (ie zoomed-in versions of the output plots with different axes). Feel free to uncomment these on your local copy and play around with different visualization. For simplicity, I only left in the overall collision overview for each video, but zooming in would show more nuance to the plots including collision duration and overlap of ongoing collisions.
 
